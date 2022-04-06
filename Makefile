@@ -6,11 +6,11 @@
 #    By: nflan <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/05 15:05:20 by nflan             #+#    #+#              #
-#    Updated: 2022/04/05 15:07:01 by nflan            ###   ########.fr        #
+#    Updated: 2022/04/06 11:45:48 by nflan            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = srcs/main.c srcs/ft_calloc.c
+SRCS = srcs/main.c srcs/ft_tools.c
 
 INC = include/philo.h
 

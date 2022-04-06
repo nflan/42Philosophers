@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_calloc.c                                        :+:      :+:    :+:   */
+/*   ft_tools.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 14:58:33 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/05 15:15:31 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/06 11:45:42 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,33 @@ int	ft_putstr_fd(char *s, int fd)
 		while (*s)
 			write(fd, (void *)s++, 1);
 	return (1);
+}
+
+long	ft_atoi(const char *str)
+{
+	unsigned int	i;
+	int				minus;
+	long			integer;
+
+	i = 0;
+	minus = 1;
+	integer = 0;
+	if (!str)
+		return (-1);
+	while ((str[i] > 8 && str[i] < 14) || str[i] == ' ')
+		i++;
+	if (str[i] == '+' || str[i] == '-')
+	{
+		if (str[i] == '-')
+			minus *= -1;
+		i++;
+	}
+	while (str[i] == '0')
+		i++;
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		integer = (integer * 10) + (str[i] - '0');
+		i++;
+	}
+	return (integer * minus);
 }
