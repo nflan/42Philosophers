@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 14:58:33 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/06 11:45:42 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/07 15:00:21 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	ft_putstr_fd(char *s, int fd)
 	return (1);
 }
 
-long	ft_atoi(const char *str)
+long long	ft_atoi(const char *str)
 {
 	unsigned int	i;
 	int				minus;
