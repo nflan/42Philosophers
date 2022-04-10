@@ -14,11 +14,11 @@
 
 void	ft_print_all(t_all *g)
 {
-	t_phil	*tmp;
+//	t_phil	*tmp;
 
-	tmp = g->p;
+//	tmp = g->p;
 	printf("g->tv_sec = %ld\n", g->tv->tv_sec);
-	printf("g->tv_usec = %ld\n", g->tv->tv_usec);
+	printf("g->tv_usec = %d\n", g->tv->tv_usec);
 	printf("tdie = %lld\n", g->tdie);
 	printf("teat = %lld\n", g->teat);
 	printf("tsleep = %lld\n", g->tsleep);
@@ -170,24 +170,25 @@ int	ft_get_time(t_all *g, t_phil *p)
 	return (0);
 }
 
+//valgrind --tool=helgrind ./philo pour voir les acces concurrents
+
 int	main(int ac, char **av)
 {
-	t_all	*g;
-	int		error;
+	t_all		*g;
+	int			error;
+	pthread_t	threadIDs[ft_atoi(av[1])];
 
 	g = NULL;
 	if (!ft_parsing(ac, av, 0))
 		g = ft_init_all();
 	if (!g)
-		return (2);
+		return (1);
 	if (ft_fill_all(g, av))
 		return (1);
 	usleep(1000);
-	while (g->p->next)
-		g->p = g->p->next;
-	while (g->p->i > 37)
-		g->p = g->p->prev;
 	error = ft_get_time(g, g->p);
+	if (error)
+		return (ft_free_all(g, 1));
 	ft_print_all(g);
 	ft_free_all(g, 0);
 	return (0);
