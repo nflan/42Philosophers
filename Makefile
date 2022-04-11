@@ -6,7 +6,7 @@
 #    By: nflan <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/05 15:05:20 by nflan             #+#    #+#              #
-#    Updated: 2022/04/07 14:18:05 by nflan            ###   ########.fr        #
+#    Updated: 2022/04/11 12:51:36 by nflan            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ DEBUG = -g3 -fsanitize=address
 all:	${NAME}
 
 $(NAME):	${OBJS} ${INC}
-	${CC} ${CFLAGS} ${OBJS} -I ${INC} -o ${NAME}
+	${CC} ${CFLAGS} -pthread ${OBJS} -I ${INC} -g3 -o ${NAME}
 
 $(OBJS):	${INC}
 

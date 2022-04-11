@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:08:42 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/07 16:52:07 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/11 15:43:33 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,10 @@ typedef struct s_all
 	long long		tsleep;
 	int				nbrp;
 	t_phil			*p;
+	pthread_mutex_t	lock;
+	pthread_t		*philo;
+	int				*ret;
+	int				i;
 }	t_all;
 
 // TOOLS
