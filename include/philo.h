@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:08:42 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/11 15:43:33 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/12 15:46:12 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,33 @@
 
 typedef struct s_phil
 {
-	int				i;
-	int 			act;
-	struct s_phil	*prev;
-	struct s_phil	*next;
+	int				id;
+	int 			x_ate;
+	int				left_fork_id;
+	int				right_fork_id;
+	long long		last_meal;
+	struct s_all	*g;
+	pthread_t		thread_id;
 }	t_phil;
 
 typedef struct s_all
 {
-	struct timeval	*tv;
-	struct timezone	*tz;
+	int				nbphilo;
 	long long		tdie;
 	long long		teat;
 	long long		tsleep;
-	int				nbrp;
-	t_phil			*p;
+	int				nbeat;
+	int				died;
+	int				all_ate;
+	long long		first_timeval;
+	pthread_mutex_t	meal_check;
 	pthread_mutex_t	lock;
-	pthread_t		*philo;
-	int				*ret;
-	int				i;
+	pthread_mutex_t	*forks;
+	t_phil			*philo;
 }	t_all;
+
+// MAIN
+long long	ft_get_time(void);
 
 // TOOLS
 void		ft_bzero(void *s, size_t n);
