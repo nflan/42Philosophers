@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:07:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/12 15:48:30 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/12 18:24:19 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,15 @@ int	ft_init_philo(t_all *g)
 	int	i;
 
 	i = 0;
-	while (++i < g->nbphilo)
+	while (i < g->nbphilo)
 	{
-		g->philo[i].id = i;
+		g->philo[i].id = i + 1;
 		g->philo[i].x_ate = 0;
 		g->philo[i].left_fork_id = i;
-		g->philo[i].left_fork_id = (i + 1) % g->nbphilo;
+		g->philo[i].right_fork_id = (i + 1) % g->nbphilo;
 		g->philo[i].last_meal = 0;
 		g->philo[i].g = g;
+		i++;
 	}
 	return (0);
 }
@@ -106,26 +107,24 @@ int	ft_init_all(t_all *g, char **av)
 		return (1);
 	g->philo = philo;
 	ft_init_philo(g);
-	printf("g->philo->id = %d\n", g->philo[0].id);
-	printf("g->philo->id = %d\n", g->philo[1].id);
 	return (0);
 }
 
 long long	ft_get_time(void)
 {
 	struct timeval	*tv;
-	struct timezone	*tz;
 	long long		time;
 
-	time = 0;
-	tz = NULL;
 	tv = NULL;
+	time = 0;
 	tv = ft_calloc(sizeof(struct timeval), 1);
 	if (!tv)
 		return (-1);
-	if (gettimeofday(tv, tz) == -1)
+	if (gettimeofday(tv, tv) == -1)
 		return (-1);
-	return (tv->tv_usec);
+	time = tv->tv_usec;
+	free(tv);
+	return (time);
 }
 
 //valgrind --tool=helgrind ./philo pour voir les acces concurrents
@@ -152,8 +151,8 @@ void	ft_philo_eats(t_all *g, t_phil *phil)
 	ft_action_print(g, phil->id, "has taken a fork");
 	ft_action_print(g, phil->id, "is eating");
 	usleep(g->teat);
-	pthread_mutex_unlock(&g->forks[phil->left_fork_id]);
 	pthread_mutex_unlock(&g->forks[phil->right_fork_id]);
+	pthread_mutex_unlock(&g->forks[phil->left_fork_id]);
 }
 
 void	*ft_thread(void *arg)
@@ -176,7 +175,6 @@ void	*ft_thread(void *arg)
 		ft_action_print(g, phil->id, "is sleeping");
 		ft_sleep(g);
 		ft_action_print(g, phil->id, "is thinking");
-		g->died = 1;
 	}
 	return (NULL);
 }	
@@ -246,6 +244,17 @@ int	ft_end_philo(t_all *g, t_phil *phil)
 	return (0);
 }
 
+int	ft_check_death(t_all *g, t_phil *phil)
+{
+	if (phil->last_meal + g->tsleep > phil->last_meal + g->tdie)
+	{
+		g->died = 1;
+		ft_action_print(g, phil->id, "died");
+		return (1);
+	}
+	return (0);
+}
+
 int	ft_philosophers(t_all *g)
 {
 	t_phil	*phil;
@@ -264,6 +273,7 @@ int	ft_philosophers(t_all *g)
 		i++;
 	}
 	i = 0;
+	ft_check_death(g, phil);
 	ft_end_philo(g, phil);
 	//ft_free_all("", g, 0);
 	return (0);
