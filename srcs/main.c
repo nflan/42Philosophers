@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:07:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/12 18:24:19 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/13 17:50:18 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,9 @@ pthread_mutex_t	lock;
 
 void	ft_print_all(t_all *g)
 {
-	//	t_phil	*tmp;
-
-	//	tmp = g->p;
 	printf("tdie = %lld\n", g->tdie);
 	printf("teat = %lld\n", g->teat);
 	printf("tsleep = %lld\n", g->tsleep);
-	//	printf("Philosophers :\n");
-	//	while (tmp)
-	//	{
-	//		printf("%d fait %d\n", tmp->i, tmp->act);
-	//		tmp = tmp->next;
-	//	}
 }
 
 int	ft_free_all(char *str, t_all *g, int code)
