@@ -34,9 +34,9 @@ int	ft_parsing(int ac, char **av, int error)
 	if (ac >= 5 && ac <= 6)
 	{
 		error = ft_is_number(ac, av, error);
-		if (ft_atoi(av[1]) < 1)
-			error += ft_putstr_fd("Le programme a besoin d'au moins un philosophe\n\
-", 2);
+		if (ft_atoi(av[1]) < 2)
+			error += ft_putstr_fd("Le programme a besoin d'au moins deux philosophe\
+s\n", 2);
 		if (ft_atoi(av[2]) < 0)
 			error += ft_putstr_fd("Le temps avant de mourir doit etre superieur ou \
 egal a 0\n", 2);

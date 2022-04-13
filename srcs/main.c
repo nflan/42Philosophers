@@ -32,18 +32,18 @@ void	ft_print_all(t_all *g)
 
 int	ft_free_all(char *str, t_all *g, int code)
 {
-/*	int	i;
+	/*	int	i;
 
-	i = 0;
-	ft_putstr_fd(str, 2);
-	if (g)
-	{
+		i = 0;
+		ft_putstr_fd(str, 2);
+		if (g)
+		{
 		if (g->tv)
-			free(g->tv);
+		free(g->tv);
 		free(g);
 		g = NULL;
-	}
-*/	(void)str;
+		}
+		*/	(void)str;
 	(void)g;
 	return (code);
 }
@@ -110,38 +110,73 @@ int	ft_init_all(t_all *g, char **av)
 	return (0);
 }
 
-long long	ft_get_time(void)
+long long	ft_time_check(long long past, long long now)
 {
-	struct timeval	*tv;
-	long long		time;
-
-	tv = NULL;
-	time = 0;
-	tv = ft_calloc(sizeof(struct timeval), 1);
-	if (!tv)
-		return (-1);
-	if (gettimeofday(tv, tv) == -1)
-		return (-1);
-	time = tv->tv_usec;
-	free(tv);
-	return (time);
+	return (now - past);
 }
 
-//valgrind --tool=helgrind ./philo pour voir les acces concurrents
+void	ft_usleep(long long time, t_all *g)
+{
+	long long i;
+
+	i = ft_get_time();
+	while (!g->died)
+	{
+		if (ft_time_check(i, ft_get_time()) >= time)
+			break ;
+		usleep(50);
+	}
+}
 
 void	ft_action_print(t_all *g, int id, char *str)
 {
 	long long	time;
 
+	pthread_mutex_lock(&g->lock);
 	time = ft_get_time();
 	time -= g->first_timeval;
 	printf("%lld %d %s\n", time, id, str);
+	pthread_mutex_unlock(&g->lock);
 }
 
-void	ft_sleep(t_all *g)
+void	ft_death_checker(t_all *g, t_phil *phil)
 {
-	usleep(g->tsleep);
+	int i;
+
+	while (!g->all_ate)
+	{
+		i = -1;
+		while (++i < g->nbphilo && !g->died)
+		{
+			pthread_mutex_lock(&g->meal_check);
+			if (ft_time_check(phil[i].last_meal, ft_get_time()) > g->tdie)
+			{
+				ft_action_print(g, i, "died");
+				g->died = 1;
+			}
+			pthread_mutex_unlock(&g->meal_check);
+			usleep(100);
+		}
+		if (g->died)
+			break ;
+		i = 0;
+		while (g->nbeat != -1 && i < g->nbphilo && phil[i].x_ate >= g->nbeat)
+			i++;
+		if (i == g->nbphilo)
+			g->all_ate = 1;
+	}
 }
+
+long long	ft_get_time(void)
+{
+	struct timeval	tv;
+
+	if (gettimeofday(&tv, NULL) == -1)
+		return (-1);
+	return (tv.tv_usec);
+}
+
+//valgrind --tool=helgrind ./philo pour voir les acces concurrents
 
 void	ft_philo_eats(t_all *g, t_phil *phil)
 {
@@ -149,10 +184,14 @@ void	ft_philo_eats(t_all *g, t_phil *phil)
 	ft_action_print(g, phil->id, "has taken a fork");
 	pthread_mutex_lock(&g->forks[phil->right_fork_id]);
 	ft_action_print(g, phil->id, "has taken a fork");
+	pthread_mutex_lock(&g->meal_check);
 	ft_action_print(g, phil->id, "is eating");
-	usleep(g->teat);
-	pthread_mutex_unlock(&g->forks[phil->right_fork_id]);
+	phil->last_meal = ft_get_time();
+	pthread_mutex_unlock(&g->meal_check);
+	ft_usleep(g->teat, g);
+	phil->x_ate++;
 	pthread_mutex_unlock(&g->forks[phil->left_fork_id]);
+	pthread_mutex_unlock(&g->forks[phil->right_fork_id]);
 }
 
 void	*ft_thread(void *arg)
@@ -173,85 +212,24 @@ void	*ft_thread(void *arg)
 		if (g->all_ate)
 			break;
 		ft_action_print(g, phil->id, "is sleeping");
-		ft_sleep(g);
+		ft_usleep(g->tsleep, g);
 		ft_action_print(g, phil->id, "is thinking");
+		i++;
 	}
 	return (NULL);
-}	
-/*	pthread_mutex_init(&phil->left_fork_id, NULL);
-	pthread_mutex_init(&g->forks[1], NULL);
-
-	g->philo->id++;
-	printf("g->philo->id = %d\n", g->philo->id);
-	time = ft_get_time(g, 0);
-	while (time > 1 && time < g->tdie)
-	{
-		pthread_mutex_lock(&g->forks[0]);
-		pthread_mutex_lock(&g->forks[1]);
-		ft_get_time(g, 1);
-		time = ft_get_time(g, 0);
-		if (time <= 1 && time > g->tdie)
-		{
-			pthread_mutex_unlock(&g->forks[0]);
-			pthread_mutex_unlock(&g->forks[1]);
-			ft_get_time(g, 5);
-			return (NULL);
-		}
-		ft_get_time(g, 1);
-		ft_get_time(g, 2);
-		time = ft_get_time(g, 0);
-		if (time <= 1 && time > g->tdie - g->teat)
-		{
-			pthread_mutex_unlock(&g->forks[0]);
-			pthread_mutex_unlock(&g->forks[1]);
-			ft_get_time(g, 5);
-			return (NULL);
-		}
-		usleep(g->teat);
-		time = ft_get_time(g, 0);
-		if (time <= 1)
-		{
-			pthread_mutex_unlock(&g->forks[0]);
-			pthread_mutex_unlock(&g->forks[1]);
-			ft_get_time(g, 5);
-			return (NULL);
-		}
-		g->tdie = g->tdie + ft_get_time(g, 0);
-	//	printf("g->tdie = %lld\n", g->tdie);
-		pthread_mutex_unlock(&g->forks[0]);
-		pthread_mutex_unlock(&g->forks[1]);
-		ft_get_time(g, 3);
-		usleep(g->tsleep);
-		time = ft_get_time(g, 0);
-	//	printf("time = %lld\n", time);
-	}
-	ft_get_time(g, 5);
-//	printf("g->tdie = %lld\n", g->tdie);
-	return (NULL);
-}*/
+}
 
 int	ft_end_philo(t_all *g, t_phil *phil)
 {
 	int	i;
 
-	i = 0;
-	while (i++ < g->nbphilo)
+	i = -1;
+	while (++i < g->nbphilo)
 		pthread_join(phil[i].thread_id, NULL);
-	i = 0;
-	while (i++ < g->nbphilo)
+	i = -1;
+	while (++i < g->nbphilo)
 		pthread_mutex_destroy(&g->forks[i]);
 	pthread_mutex_destroy(&g->lock);
-	return (0);
-}
-
-int	ft_check_death(t_all *g, t_phil *phil)
-{
-	if (phil->last_meal + g->tsleep > phil->last_meal + g->tdie)
-	{
-		g->died = 1;
-		ft_action_print(g, phil->id, "died");
-		return (1);
-	}
 	return (0);
 }
 
@@ -272,16 +250,13 @@ int	ft_philosophers(t_all *g)
 		phil[i].last_meal = ft_get_time();
 		i++;
 	}
-	i = 0;
-	ft_check_death(g, phil);
+	ft_death_checker(g, phil);
 	ft_end_philo(g, phil);
-	//ft_free_all("", g, 0);
 	return (0);
 }
 
 int	main(int ac, char **av)
 {
-	//	char		*msg1 = "First Thread";
 	t_all		g;
 
 	if (ft_parsing(ac, av, 0))
