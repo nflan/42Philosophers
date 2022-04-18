@@ -12,31 +12,10 @@
 
 #include "../include/philo.h"
 
-pthread_mutex_t	lock;
-
-void	ft_print_all(t_all *g)
+int	ft_print_error(char *str)
 {
-	printf("tdie = %lld\n", g->tdie);
-	printf("teat = %lld\n", g->teat);
-	printf("tsleep = %lld\n", g->tsleep);
-}
-
-int	ft_free_all(char *str, t_all *g, int code)
-{
-	/*	int	i;
-
-		i = 0;
-		ft_putstr_fd(str, 2);
-		if (g)
-		{
-		if (g->tv)
-		free(g->tv);
-		free(g);
-		g = NULL;
-		}
-		*/	(void)str;
-	(void)g;
-	return (code);
+	printf("%s\n", str);
+	return (1);
 }
 
 int	ft_init_mutex(t_all *g)
@@ -63,7 +42,7 @@ int	ft_init_philo(t_all *g)
 	i = 0;
 	while (i < g->nbphilo)
 	{
-		g->philo[i].id = i + 1;
+		g->philo[i].id = i;
 		g->philo[i].x_ate = 0;
 		g->philo[i].left_fork_id = i;
 		g->philo[i].right_fork_id = (i + 1) % g->nbphilo;
@@ -74,11 +53,8 @@ int	ft_init_philo(t_all *g)
 	return (0);
 }
 
-int	ft_init_all(t_all *g, char **av)
+void	ft_init_all(t_all *g, char **av)
 {
-	pthread_mutex_t	forks[ft_atoi(av[1])];
-	t_phil			philo[ft_atoi(av[1])];
-
 	g->nbphilo = ft_atoi(av[1]);
 	g->tdie = ft_atoi(av[2]);
 	g->teat = ft_atoi(av[3]);
@@ -86,19 +62,11 @@ int	ft_init_all(t_all *g, char **av)
 	g->died = 0;
 	g->all_ate = 0;
 	if (av[5])
-	{
 		g->nbeat = ft_atoi(av[5]);
-		if (g->nbeat <= 0)
-			return (1);
-	}
 	else
 		g->nbeat = -1;
-	g->forks = forks;
-	if (ft_init_mutex(g))
-		return (1);
-	g->philo = philo;
+	ft_init_mutex(g);
 	ft_init_philo(g);
-	return (0);
 }
 
 long long	ft_time_check(long long past, long long now)
@@ -124,9 +92,9 @@ void	ft_action_print(t_all *g, int id, char *str)
 	long long	time;
 
 	pthread_mutex_lock(&g->lock);
-	time = ft_get_time();
-	time -= g->first_timeval;
-	printf("%lld %d %s\n", time, id, str);
+	time = ft_get_time() - g->first_timeval;
+	if (!g->died)
+		printf("%lld %d %s\n", time, id + 1, str);
 	pthread_mutex_unlock(&g->lock);
 }
 
@@ -146,7 +114,7 @@ void	ft_death_checker(t_all *g, t_phil *phil)
 				g->died = 1;
 			}
 			pthread_mutex_unlock(&g->meal_check);
-			usleep(100);
+			usleep(1000);
 		}
 		if (g->died)
 			break ;
@@ -164,7 +132,7 @@ long long	ft_get_time(void)
 
 	if (gettimeofday(&tv, NULL) == -1)
 		return (-1);
-	return (tv.tv_usec);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
 //valgrind --tool=helgrind ./philo pour voir les acces concurrents
@@ -193,14 +161,14 @@ void	*ft_thread(void *arg)
 	int			i;
 
 	i = 0;
-	phil = (t_phil *) arg;
+	phil = (t_phil *)arg;
 	g = phil->g;
 	if (phil->id % 2)
-		usleep(g->teat);
+		usleep(1000);
 	while (!g->died)
 	{
 		ft_philo_eats(g, phil);
-		if (g->all_ate)
+		if (g->all_ate || g->died)
 			break;
 		ft_action_print(g, phil->id, "is sleeping");
 		ft_usleep(g->tsleep, g);
@@ -210,18 +178,27 @@ void	*ft_thread(void *arg)
 	return (NULL);
 }
 
-int	ft_end_philo(t_all *g, t_phil *phil)
+void	ft_unlock(t_all *g)
+{
+	pthread_mutex_unlock(&g->meal_check);
+	pthread_mutex_unlock(&g->forks[g->philo->left_fork_id]);
+	pthread_mutex_unlock(&g->forks[g->philo->right_fork_id]);
+}
+
+void	ft_end_philo(t_all *g, t_phil *phil)
 {
 	int	i;
 
 	i = -1;
 	while (++i < g->nbphilo)
-		pthread_join(phil[i].thread_id, NULL);
+	{
+		ft_unlock(g);
+		pthread_mutex_destroy(&g->forks[i]);
+	}
 	i = -1;
 	while (++i < g->nbphilo)
-		pthread_mutex_destroy(&g->forks[i]);
+		pthread_join(phil[i].thread_id, NULL);
 	pthread_mutex_destroy(&g->lock);
-	return (0);
 }
 
 int	ft_philosophers(t_all *g)
@@ -232,8 +209,6 @@ int	ft_philosophers(t_all *g)
 	i = 0;
 	phil = g->philo;
 	g->first_timeval = ft_get_time();
-	if (g->first_timeval <= 0)
-		return (ft_free_all("Get time error\n", g, 1));
 	while (i < g->nbphilo)
 	{
 		if (pthread_create(&phil[i].thread_id, NULL, ft_thread, &phil[i]))
@@ -241,7 +216,7 @@ int	ft_philosophers(t_all *g)
 		phil[i].last_meal = ft_get_time();
 		i++;
 	}
-	ft_death_checker(g, phil);
+	ft_death_checker(g, g->philo);
 	ft_end_philo(g, phil);
 	return (0);
 }
@@ -251,10 +226,9 @@ int	main(int ac, char **av)
 	t_all		g;
 
 	if (ft_parsing(ac, av, 0))
-		return (ft_free_all("Parsing error\n", &g, 1));
-	if (ft_init_all(&g, av))
-		return (ft_free_all("Init error\n", &g, 1));
+		return (ft_print_error("Parsing error"));
+	ft_init_all(&g, av);
 	if (ft_philosophers(&g))
-		return (ft_free_all("Threads init error\n", &g, 1));
+		return (ft_print_error("Threads init error"));
 	return (0);
 }

@@ -44,8 +44,8 @@ typedef struct s_all
 	long long		first_timeval;
 	pthread_mutex_t	meal_check;
 	pthread_mutex_t	lock;
-	pthread_mutex_t	*forks;
-	t_phil			*philo;
+	pthread_mutex_t	forks[300];
+	t_phil			philo[300];
 }	t_all;
 
 // MAIN
