@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = srcs/main_bonus.c srcs/ft_tools_bonus.c srcs/ft_parse_bonus.c
+SRCS = srcs/main_bonus.c srcs/ft_tools_bonus.c srcs/ft_parse_bonus.c srcs/ft_itoa.c srcs/ft_strjoin.c
 
 INC = include/philo_bonus.h
 
