@@ -1,21 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_bonus.c                                       :+:      :+:    :+:   */
+/*   ft_init.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/20 12:06:37 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/20 14:57:06 by nflan            ###   ########.fr       */
+/*   Created: 2022/04/20 11:25:00 by nflan             #+#    #+#             */
+/*   Updated: 2022/04/20 11:25:39 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/philo_bonus.h"
+#include "../include/philo.h"
 
-int	ft_print_error(char *str)
+int	ft_init_mutex(t_all *g)
 {
-	printf("%s\n", str);
-	return (1);
+	int	i;
+
+	i = g->nbphilo;
+	while (i-- > 0)
+		if (pthread_mutex_init(&g->forks[i], NULL))
+			return (1);
+	if (pthread_mutex_init(&g->lock, NULL))
+		return (1);
+	if (pthread_mutex_init(&g->meal_check, NULL))
+		return (1);
+	return (0);
 }
 
 int	ft_init_philo(t_all *g)
@@ -36,10 +45,8 @@ int	ft_init_philo(t_all *g)
 	return (0);
 }
 
-int	ft_init_all(t_all *g, char **av)
+void	ft_init_all(t_all *g, char **av)
 {
-	char	str[6] = "FORKS";
-
 	g->nbphilo = ft_atoi(av[1]);
 	g->tdie = ft_atoi(av[2]);
 	g->teat = ft_atoi(av[3]);
@@ -50,23 +57,6 @@ int	ft_init_all(t_all *g, char **av)
 		g->nbeat = ft_atoi(av[5]);
 	else
 		g->nbeat = -1;
-	g->sem = str;
-	sem_unlink(g->sem);
-	g->forks = sem_open(g->sem, O_CREAT, 0660, ft_atoi(av[1]));
-	if (g->forks == SEM_FAILED)
-		return (ft_print_error("Sem open failed"));
+	ft_init_mutex(g);
 	ft_init_philo(g);
-	return (0);
-}
-
-int	main(int ac, char **av)
-{
-	t_all	g;
-
-	if (ft_parsing(ac, av, 0))
-		return (ft_print_error("Parsing error"));
-	if (ft_init_all(&g, av))
-		return (ft_print_error("Init error"));
-	sem_close(g.forks);
-	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:08:42 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/12 15:46:12 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/20 11:40:12 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 typedef struct s_phil
 {
 	int				id;
-	int 			x_ate;
+	int				x_ate;
 	int				left_fork_id;
 	int				right_fork_id;
 	long long		last_meal;
@@ -44,14 +44,34 @@ typedef struct s_all
 	long long		first_timeval;
 	pthread_mutex_t	meal_check;
 	pthread_mutex_t	lock;
-	pthread_mutex_t	forks[300];
-	t_phil			philo[300];
+	pthread_mutex_t	forks[210];
+	t_phil			philo[210];
 }	t_all;
 
 // MAIN
+
+// INIT
+int			ft_init_mutex(t_all *g);
+int			ft_init_philo(t_all *g);
+void		ft_init_all(t_all *g, char **av);
+
+// PHILO
+int			ft_philosophers(t_all *g);
+void		*ft_thread(void *arg);
+void		ft_philo_eats(t_all *g, t_phil *phil);
+
+// FINISH
+void		ft_death_checker(t_all *g, t_phil *phil);
+void		ft_end_philo(t_all *g, t_phil *phil);
+
+// UTILS
+long long	ft_time_check(long long past, long long now);
 long long	ft_get_time(void);
+void		ft_usleep(long long time, t_all *g);
+void		ft_action_print(t_all *g, int id, char *str);
 
 // TOOLS
+int			ft_print_error(char *str);
 void		ft_bzero(void *s, size_t n);
 void		*ft_calloc(size_t nmemb, size_t size);
 int			ft_putstr_fd(char *s, int fd);

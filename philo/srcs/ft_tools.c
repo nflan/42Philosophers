@@ -6,11 +6,17 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 14:58:33 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/12 11:58:22 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/20 11:23:53 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
+
+int	ft_print_error(char *str)
+{
+	printf("%s\n", str);
+	return (1);
+}
 
 void	ft_bzero(void *s, size_t n)
 {
