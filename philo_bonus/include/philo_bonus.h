@@ -33,13 +33,28 @@ typedef struct s_all
 	int				died;
 	int				all_ate;
 	long long		first_timeval;
+	int				nbfork;
+	char			*sem_e;
+	sem_t			*eat;
 	char			*sem;
 	sem_t			*forks;
+	char			*sem_d;
+	sem_t			*death;
 	t_phil			philo[210];
 }	t_all;
 
 // MAIN
 long long		ft_get_time(void);
+
+// FINISH
+void		ft_death_checker(t_all *g, t_phil *phil);
+void		ft_end_philo(t_all *g, t_phil *phil);
+
+// UTILS
+long long	ft_time_check(long long past, long long now);
+long long	ft_get_time(void);
+void		ft_usleep(long long time, t_all *g);
+void		ft_action_print(t_all *g, int id, char *str);
 
 // TOOLS
 void			ft_bzero(void *s, size_t n);

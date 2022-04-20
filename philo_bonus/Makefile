@@ -6,11 +6,11 @@
 #    By: nflan <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/19 11:05:20 by nflan             #+#    #+#              #
-#    Updated: 2022/04/19 11:51:36 by nflan            ###   ########.fr        #
+#    Updated: 2022/04/20 15:11:24 by nflan            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = srcs/main_bonus.c srcs/ft_tools_bonus.c srcs/ft_parse_bonus.c srcs/ft_itoa.c srcs/ft_strjoin.c
+SRCS = srcs/main_bonus.c srcs/ft_tools_bonus.c srcs/ft_parse_bonus.c srcs/ft_itoa.c srcs/ft_strjoin.c srcs/ft_finish_bonus.c srcs/ft_utils_bonus.c
 
 INC = include/philo_bonus.h
 

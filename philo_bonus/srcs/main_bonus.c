@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:06:37 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/20 14:57:06 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/20 16:23:08 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,28 @@ int	ft_init_philo(t_all *g)
 	return (0);
 }
 
-int	ft_init_all(t_all *g, char **av)
+int	ft_init_sem(t_all *g)
 {
 	char	str[6] = "FORKS";
+	char	dead[6] = "DEATH";
+	char	eat[4] = "EAT";
+
+	g->sem = str;
+	g->sem_d = dead;
+	g->sem_e = eat;
+	sem_unlink(g->sem);
+	sem_unlink(g->sem_d);
+	sem_unlink(g->sem_e);
+	g->forks = sem_open(g->sem, O_CREAT, 0660, g->nbphilo);
+	g->death = sem_open(g->sem_d, O_CREAT, 0660, 1);
+	g->eat = sem_open(g->sem_e, O_CREAT, 0660, 1);
+	if (g->forks == SEM_FAILED || g->death == SEM_FAILED || g->eat == SEM_FAILED)
+		return (ft_print_error("Sem open failed"));
+	return (0);
+}
+
+int	ft_init_all(t_all *g, char **av)
+{
 
 	g->nbphilo = ft_atoi(av[1]);
 	g->tdie = ft_atoi(av[2]);
@@ -50,12 +69,73 @@ int	ft_init_all(t_all *g, char **av)
 		g->nbeat = ft_atoi(av[5]);
 	else
 		g->nbeat = -1;
-	g->sem = str;
-	sem_unlink(g->sem);
-	g->forks = sem_open(g->sem, O_CREAT, 0660, ft_atoi(av[1]));
-	if (g->forks == SEM_FAILED)
-		return (ft_print_error("Sem open failed"));
+	g->nbfork = 0;
+	if (ft_init_sem(g))
+		return (1);
 	ft_init_philo(g);
+	return (0);
+}
+
+void	ft_philo_eats(t_all *g, t_phil *phil)
+{
+	sem_wait(g->forks);
+	g->nbfork++;
+	ft_action_print(g, phil->id, "has taken a fork");
+	sem_wait(g->forks);
+	g->nbfork++;
+	ft_action_print(g, phil->id, "has taken a fork");
+	sem_wait(g->eat);
+	ft_action_print(g, phil->id, "is eating");
+	phil->last_meal = ft_get_time();
+	sem_post(g->eat);
+	ft_usleep(g->teat, g);
+	phil->x_ate++;
+	sem_post(g->forks);
+	g->nbfork--;
+	sem_post(g->forks);
+	g->nbfork--;
+	if (phil->id + 1 == g->nbphilo && phil->x_ate == g->nbeat)
+		g->all_ate = 1;
+}
+
+void	*ft_thread(void *arg)
+{
+	t_phil		*phil;
+	t_all		*g;
+
+	phil = (t_phil *)arg;
+	g = phil->g;
+	if (phil->id % 2)
+		usleep(1500);
+	while (!g->died && !g->all_ate)
+	{
+		ft_philo_eats(g, phil);
+		if (g->all_ate || g->died)
+			break ;
+		ft_action_print(g, phil->id, "is sleeping");
+		ft_usleep(g->tsleep, g);
+		ft_action_print(g, phil->id, "is thinking");
+	}
+	return (NULL);
+}
+
+int	ft_philosophers(t_all *g)
+{
+	t_phil	*phil;
+	int		i;
+
+	i = 0;
+	phil = g->philo;
+	g->first_timeval = ft_get_time();
+	while (i < g->nbphilo)
+	{
+		if (pthread_create(&phil[i].thread_id, NULL, ft_thread, &phil[i]))
+			return (1);
+		phil[i].last_meal = ft_get_time();
+		i++;
+	}
+	ft_death_checker(g, g->philo);
+	ft_end_philo(g, phil);
 	return (0);
 }
 
@@ -67,6 +147,7 @@ int	main(int ac, char **av)
 		return (ft_print_error("Parsing error"));
 	if (ft_init_all(&g, av))
 		return (ft_print_error("Init error"));
-	sem_close(g.forks);
+	if (ft_philosophers(&g))
+		return (ft_print_error("Thread error"));
 	return (0);
 }
