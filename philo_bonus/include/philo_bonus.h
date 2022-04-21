@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/21 11:49:07 by nflan             #+#    #+#             */
+/*   Updated: 2022/04/21 12:38:59 by nflan            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_BONUS_H
 # define PHILO_BONUS_H
 
@@ -6,21 +18,26 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <unistd.h>
-# include <pthread.h>
-# include <semaphore.h>
-# include <sys/stat.h>
-# include <fcntl.h>
+// time
 # include <sys/time.h>
+// kill
+# include <sys/types.h>
+# include <signal.h>
+// threads
+# include <pthread.h>
+// semaphores
+# include <fcntl.h>
+# include <sys/stat.h>
+# include <semaphore.h>
 
 typedef struct s_phil
 {
 	int				id;
 	int 			x_ate;
-	int				left_fork_id;
-	int				right_fork_id;
 	long long		last_meal;
 	struct s_all	*g;
-	pthread_t		thread_id;
+//	pthread_t		thread_id;
+	pid_t			child;
 }	t_phil;
 
 typedef struct s_all
@@ -33,7 +50,6 @@ typedef struct s_all
 	int				died;
 	int				all_ate;
 	long long		first_timeval;
-	int				nbfork;
 	char			*sem_e;
 	sem_t			*eat;
 	char			*sem;
@@ -41,13 +57,14 @@ typedef struct s_all
 	char			*sem_d;
 	sem_t			*death;
 	t_phil			philo[210];
+	pthread_t		thread_id;
 }	t_all;
 
 // MAIN
-long long		ft_get_time(void);
 
 // FINISH
-void		ft_death_checker(t_all *g, t_phil *phil);
+//void		ft_death_checker(t_all *g, t_phil *phil);
+void		*ft_death_checker(void *arg);
 void		ft_end_philo(t_all *g, t_phil *phil);
 
 // UTILS

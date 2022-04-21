@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/20 16:09:11 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/21 15:25:52 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ void	ft_action_print(t_all *g, int id, char *str)
 {
 	long long	time;
 
-	sem_wait(g->death);
+	sem_post(g->death);
 	time = ft_get_time() - g->first_timeval;
 	if (!g->died)
 		printf("%lld %d %s\n", time, id + 1, str);
-	sem_post(g->death);
+	sem_wait(g->death);
 }
