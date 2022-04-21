@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 11:49:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/21 12:38:59 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/21 18:16:00 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <unistd.h>
+// waitpid
+# include <sys/wait.h>
 // time
 # include <sys/time.h>
 // kill
@@ -36,7 +38,7 @@ typedef struct s_phil
 	int 			x_ate;
 	long long		last_meal;
 	struct s_all	*g;
-//	pthread_t		thread_id;
+	pthread_t		thread_id;
 	pid_t			child;
 }	t_phil;
 
@@ -56,8 +58,10 @@ typedef struct s_all
 	sem_t			*forks;
 	char			*sem_d;
 	sem_t			*death;
+	char			*sem_end;
+	sem_t			*end;
 	t_phil			philo[210];
-	pthread_t		thread_id;
+//	pthread_t		thread_id;
 }	t_all;
 
 // MAIN

@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:06:37 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/21 15:23:13 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/21 18:29:14 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,10 @@ void	ft_philo_eats(t_all *g, t_phil *phil)
 
 void	*ft_thread(t_all *g, t_phil *phil)
 {
+	if (pthread_create(&phil->thread_id, NULL, ft_death_checker, phil))
+		return (NULL);
 	if (phil->id % 2)
-		usleep(1500);
+		usleep(g->teat - 1000);
 	while (!g->died && !g->all_ate)
 	{
 		ft_philo_eats(g, phil);
@@ -104,7 +106,9 @@ void	*ft_thread(t_all *g, t_phil *phil)
 		ft_usleep(g->tsleep, g);
 		ft_action_print(g, phil->id, "is thinking");
 	}
-	return (NULL);
+	ft_end_philo(g, phil);
+//	pthread_join(phil->thread_id, NULL);
+	exit (0);
 }
 
 int	ft_philosophers(t_all *g)
@@ -125,16 +129,12 @@ int	ft_philosophers(t_all *g)
 			return (ft_print_error("Child error"));
 		else if ((int) phil[i].child == 0)
 		{
-			ft_thread(g, &phil[i]);
-			phil[i].last_meal = ft_get_time();
+			if (ft_thread(g, &phil[i]))
+				return (1);
 		}
-		i++;
 	}
-	if (pthread_create(&g->thread_id, NULL, ft_death_checker, g))
-		return (1);
 //	ft_death_checker(g, g->philo);
-	while (!g->died && !g->all_ate)
-	{}
+	waitpid(phil->child, &phil->child, 0);
 	ft_end_philo(g, phil);
 	return (0);
 }
