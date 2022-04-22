@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:06:37 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/21 18:29:14 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/22 12:04:07 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ void	ft_philo_eats(t_all *g, t_phil *phil)
 void	*ft_thread(t_all *g, t_phil *phil)
 {
 	if (pthread_create(&phil->thread_id, NULL, ft_death_checker, phil))
-		return (NULL);
+		return (ft_end_philo(g, phil));
+	//printf("phil->thread_id = %ld\n", phil->thread_id);
 	if (phil->id % 2)
 		usleep(g->teat - 1000);
 	while (!g->died && !g->all_ate)
@@ -106,8 +107,8 @@ void	*ft_thread(t_all *g, t_phil *phil)
 		ft_usleep(g->tsleep, g);
 		ft_action_print(g, phil->id, "is thinking");
 	}
+	printf("allo\n");
 	ft_end_philo(g, phil);
-//	pthread_join(phil->thread_id, NULL);
 	exit (0);
 }
 
@@ -134,8 +135,15 @@ int	ft_philosophers(t_all *g)
 		}
 	}
 //	ft_death_checker(g, g->philo);
-	waitpid(phil->child, &phil->child, 0);
-	ft_end_philo(g, phil);
+	i = -1;
+	while (++i < g->nbphilo)
+		waitpid(phil[i].child, &phil[i].child, 0);
+//	ft_end_philo(g, phil);
+	sem_close(g->forks);
+	sem_close(g->death);
+	sem_close(g->eat);
+//	while (++i < g->nbphilo)
+//		pthread_join(phil[i].thread_id, NULL);
 	return (0);
 }
 

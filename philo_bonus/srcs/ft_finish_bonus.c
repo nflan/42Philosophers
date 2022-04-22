@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:31:57 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/21 18:29:21 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/22 12:02:50 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	*ft_death_checker(void *arg)
 
 	phil = (t_phil *)arg;
 	g = phil->g;
+//	printf("phil->thread_id = %ld\n", phil->thread_id);
 	while (!g->all_ate)
 	{
 		i = -1;
@@ -57,7 +58,6 @@ void	*ft_death_checker(void *arg)
 				ft_action_print(g, i, "died");
 				sem_post(g->death);
 				g->died = 1;
-				ft_end_philo(g, phil);
 			}
 			usleep(1000);
 		}
@@ -67,15 +67,13 @@ void	*ft_death_checker(void *arg)
 		while (g->nbeat != -1 && i < g->nbphilo && phil->x_ate >= g->nbeat)
 			i++;
 		if (i == g->nbphilo)
-		{
 			g->all_ate = 1;
-			ft_end_philo(g, phil);
-		}
 	}
+//	ft_end_philo(g, phil);
 	return (NULL);
 }
 
-void	ft_end_philo(t_all *g, t_phil *phil)
+void	*ft_end_philo(t_all *g, t_phil *phil)
 {
 	int	i;
 
@@ -85,7 +83,9 @@ void	ft_end_philo(t_all *g, t_phil *phil)
 	sem_close(g->forks);
 	sem_close(g->death);
 	sem_close(g->eat);
-	if (phil->thread_id)
-		pthread_join(phil->thread_id, NULL);
+//	printf("phil->thread_id = %ld\n", phil->thread_id);
+//	(void)phil;
+	pthread_join(phil->thread_id, NULL);
+	//pthread_detach(phil->thread_id);
 	exit (0);
 }

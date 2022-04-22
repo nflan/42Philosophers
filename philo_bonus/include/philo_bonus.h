@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 11:49:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/21 18:16:00 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/22 11:34:23 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ typedef struct s_all
 // FINISH
 //void		ft_death_checker(t_all *g, t_phil *phil);
 void		*ft_death_checker(void *arg);
-void		ft_end_philo(t_all *g, t_phil *phil);
+void		*ft_end_philo(t_all *g, t_phil *phil);
 
 // UTILS
 long long	ft_time_check(long long past, long long now);
