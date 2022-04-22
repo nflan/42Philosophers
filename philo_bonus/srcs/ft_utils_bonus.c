@@ -21,10 +21,8 @@ long long	ft_get_time(t_all *g)
 {
 	struct timeval	tv;
 
-//	sem_wait(g->time);
-(void)g;
+	(void)g;
 	gettimeofday(&tv, NULL);
-//	sem_post(g->time);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
@@ -45,7 +43,9 @@ void	ft_action_print(t_all *g, int id, char *str)
 {
 	long long	time;
 
+	sem_wait(g->print);
 	time = ft_get_time(g) - g->first_timeval;
 	if (!g->death->__align)
 		printf("%lld %d %s\n", time, id + 1, str);
+	sem_post(g->print);
 }

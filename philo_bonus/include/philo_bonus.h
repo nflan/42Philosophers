@@ -52,7 +52,7 @@ typedef struct s_all
 	int				died;
 	long long		first_timeval;
 	char			*sem_e;
-	sem_t			*eat;
+sem_t			*eat;
 	char			*sem;
 	sem_t			*forks;
 	char			*sem_d;
@@ -61,6 +61,8 @@ typedef struct s_all
 	sem_t			*end;
 	char			*sem_t;
 	sem_t			*time;
+	char			*sem_p;
+	sem_t			*print;
 	t_phil			philo[210];
 //	pthread_t		thread_id;
 }	t_all;

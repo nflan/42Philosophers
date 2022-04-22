@@ -16,14 +16,13 @@ void	*ft_death_checker(void *arg)
 {
 	t_phil	*phil;
 	t_all	*g;
-	int		i;
 
 	phil = (t_phil *)arg;
 	g = phil->g;
 	while (!g->death->__align)
 	{
 //		printf("id = %d && last meal = %lld && time = %lld\n", phil->id, phil->last_meal, ft_get_time(g));
-		if (ft_time_check(phil->last_meal, ft_get_time(g)) > g->tdie)
+		if (!g->death->__align && ft_time_check(phil->last_meal, ft_get_time(g)) > g->tdie)
 		{
 		//	printf("temps entre last repas et mort = %lld && id = %d\n", ft_time_check(phil->last_meal, ft_get_time(g)), phil->id + 1);
 			ft_action_print(g, phil->id, "died");
@@ -31,14 +30,14 @@ void	*ft_death_checker(void *arg)
 		}
 		if (g->death->__align)
 			break ;
-		i = 0;
-		while (g->nbeat != -1 && i < g->nbphilo && phil->x_ate >= g->nbeat)
-			i++;
-		if (i == g->nbphilo)
+		if (g->nbeat != -1 && phil->x_ate == g->nbeat)
+			sem_wait(g->time);
+		if (!g->time->__align)
 			sem_post(g->death);
 		usleep(500);
 	}
-//	sem_post(g->forks);
+	//if (g->forks->__align < 1)
+		sem_post(g->forks);
 	return (NULL);
 }
 
@@ -54,5 +53,6 @@ void	*ft_end_philo(t_all *g, int ret)
 	sem_close(g->death);
 	sem_close(g->eat);
 	sem_close(g->time);
+	sem_close(g->print);
 	exit (ret);
 }
