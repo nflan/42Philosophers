@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:06:37 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/22 12:04:07 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/26 09:45:03 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void	*ft_thread(t_all *g, t_phil phil, int i)
 	if (ft_init_philo(g, &phil, i))
 		return (ft_end_philo(g, 1));
 	if (phil.id % 2)
-		usleep(1500);
+		usleep(g->teat);
 	while (!g->death->__align)
 	{
 		ft_philo_eats(g, &phil);

@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/20 11:28:20 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/26 12:59:24 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	ft_usleep(long long time, t_all *g)
 	long long	i;
 
 	i = ft_get_time();
-	while (!g->died)
+	while (!g->died && !g->all_ate)
 	{
 		if (ft_time_check(i, ft_get_time()) >= time)
 			break ;
@@ -44,7 +44,7 @@ void	ft_action_print(t_all *g, int id, char *str)
 
 	pthread_mutex_lock(&g->lock);
 	time = ft_get_time() - g->first_timeval;
-	if (!g->died)
+	if (!g->died && !g->all_ate)
 		printf("%lld %d %s\n", time, id + 1, str);
 	pthread_mutex_unlock(&g->lock);
 }

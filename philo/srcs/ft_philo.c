@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:30:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/20 11:30:57 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/26 13:11:50 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,17 @@ void	*ft_thread(void *arg)
 {
 	t_phil		*phil;
 	t_all		*g;
+	pthread_mutex_t	test;
 
+	pthread_mutex_init(&test, NULL);
+	pthread_mutex_lock(&test);
 	phil = (t_phil *)arg;
 	g = phil->g;
 	if (phil->id % 2)
-		usleep(1500);
+	{
+		pthread_mutex_unlock(&test);
+		ft_usleep(g->teat, g);
+	}
 	while (!g->died && !g->all_ate)
 	{
 		ft_philo_eats(g, phil);
@@ -67,6 +73,4 @@ void	ft_philo_eats(t_all *g, t_phil *phil)
 	phil->x_ate++;
 	pthread_mutex_unlock(&g->forks[phil->left_fork_id]);
 	pthread_mutex_unlock(&g->forks[phil->right_fork_id]);
-	if (phil->id + 1 == g->nbphilo && phil->x_ate == g->nbeat)
-		g->all_ate = 1;
 }
