@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:08:42 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/20 11:40:12 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/26 16:52:44 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ typedef struct s_all
 	long long		first_timeval;
 	pthread_mutex_t	meal_check;
 	pthread_mutex_t	lock;
-	pthread_mutex_t	forks[210];
-	t_phil			philo[210];
+	pthread_mutex_t	forks[300];
+	t_phil			philo[300];
 }	t_all;
 
 // MAIN
@@ -58,7 +58,7 @@ void		ft_init_all(t_all *g, char **av);
 // PHILO
 int			ft_philosophers(t_all *g);
 void		*ft_thread(void *arg);
-void		ft_philo_eats(t_all *g, t_phil *phil);
+void		ft_philo_eats(t_phil *phil, t_all *g);
 
 // FINISH
 void		ft_death_checker(t_all *g, t_phil *phil);

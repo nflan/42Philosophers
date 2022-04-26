@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:30:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/26 13:11:50 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/26 16:50:51 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	ft_philosophers(t_all *g)
 		phil[i].last_meal = ft_get_time();
 		i++;
 	}
+	ft_usleep(50, g);
 	ft_death_checker(g, g->philo);
 	ft_end_philo(g, phil);
 	return (0);
@@ -36,20 +37,14 @@ void	*ft_thread(void *arg)
 {
 	t_phil		*phil;
 	t_all		*g;
-	pthread_mutex_t	test;
 
-	pthread_mutex_init(&test, NULL);
-	pthread_mutex_lock(&test);
 	phil = (t_phil *)arg;
 	g = phil->g;
 	if (phil->id % 2)
-	{
-		pthread_mutex_unlock(&test);
-		ft_usleep(g->teat, g);
-	}
+		ft_usleep(g->teat / 2, g);
 	while (!g->died && !g->all_ate)
 	{
-		ft_philo_eats(g, phil);
+		ft_philo_eats(phil, g);
 		if (g->all_ate || g->died)
 			break ;
 		ft_action_print(g, phil->id, "is sleeping");
@@ -59,18 +54,18 @@ void	*ft_thread(void *arg)
 	return (NULL);
 }
 
-void	ft_philo_eats(t_all *g, t_phil *phil)
+void	ft_philo_eats(t_phil *phil, t_all *g)
 {
 	pthread_mutex_lock(&g->forks[phil->left_fork_id]);
 	ft_action_print(g, phil->id, "has taken a fork");
 	pthread_mutex_lock(&g->forks[phil->right_fork_id]);
 	ft_action_print(g, phil->id, "has taken a fork");
-	pthread_mutex_lock(&g->meal_check);
 	ft_action_print(g, phil->id, "is eating");
+	pthread_mutex_lock(&g->meal_check);
 	phil->last_meal = ft_get_time();
+	phil->x_ate++;
 	pthread_mutex_unlock(&g->meal_check);
 	ft_usleep(g->teat, g);
-	phil->x_ate++;
-	pthread_mutex_unlock(&g->forks[phil->left_fork_id]);
 	pthread_mutex_unlock(&g->forks[phil->right_fork_id]);
+	pthread_mutex_unlock(&g->forks[phil->left_fork_id]);
 }

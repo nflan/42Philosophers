@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:25:00 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/20 11:25:39 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/26 14:49:26 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int	ft_init_philo(t_all *g)
 		g->philo[i].right_fork_id = (i + 1) % g->nbphilo;
 		g->philo[i].last_meal = 0;
 		g->philo[i].g = g;
+//		printf("g->philo[i] left %d\ng->philo[i] right %d\n", g->philo[i].left_fork_id, g->philo[i].right_fork_id);
 		i++;
 	}
 	return (0);
