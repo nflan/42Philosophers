@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/26 16:47:42 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/26 18:26:02 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,38 @@ void	ft_usleep(long long time, t_all *g)
 	}
 }
 
+/*void	ft_putchar(char c)
+{
+	write(1, &c, 1);
+}
+
+void	ft_putnbr(int n)
+{
+	if (n < 0)
+	{
+		n = -n;
+		ft_putchar('-');
+	}
+	if (n >= 10)
+	{
+		ft_putnbr(n / 10);
+		ft_putnbr(n % 10);
+	}
+	else
+		ft_putchar(n + '0');
+}
+
+int	ft_strlen(char *str)
+{
+	int	i;
+	
+	i = 0;
+	if (str)
+		while (str[i])
+			i++;
+	return (i);
+}*/
+
 void	ft_action_print(t_all *g, int id, char *str)
 {
 	long long	time;
@@ -45,6 +77,14 @@ void	ft_action_print(t_all *g, int id, char *str)
 	pthread_mutex_lock(&g->lock);
 	time = ft_get_time() - g->first_timeval;
 	if (!g->died && !g->all_ate)
-		printf("%lld %d %s\n", time, id + 1, str);
+/*	{
+		ft_putnbr(time);
+		write(1, " ", 1);
+		ft_putnbr(id + 1);
+		write(1, " ", 1);
+		write(1, str, ft_strlen(str));
+		write(1, "\n", 1);
+	}
+*/		printf("%lld %d %s\n", time, id + 1, str);
 	pthread_mutex_unlock(&g->lock);
 }
