@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:31:57 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/22 12:02:50 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/27 13:29:33 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,17 @@ void	*ft_death_checker(void *arg)
 		if (!g->death->__align && ft_time_check(phil->last_meal, ft_get_time(g)) > g->tdie)
 		{
 		//	printf("temps entre last repas et mort = %lld && id = %d\n", ft_time_check(phil->last_meal, ft_get_time(g)), phil->id + 1);
-			ft_action_print(g, phil->id, "died");
-			sem_post(g->death);
-		}
-		if (g->death->__align)
+			ft_action_print(g, phil->id, " died\n");
 			break ;
-		if (g->nbeat != -1 && phil->x_ate == g->nbeat)
-			sem_wait(g->time);
-		if (!g->time->__align)
-			sem_post(g->death);
-		usleep(500);
+		}
+		if (phil->id % 2)
+			if (g->nbeat != -1 && phil->x_ate == g->nbeat)
+				break ;
+//		ft_usleep(1, g);;
 	}
 	//if (g->forks->__align < 1)
-		sem_post(g->forks);
+	sem_post(g->death);
+	sem_post(g->forks);
 	return (NULL);
 }
 

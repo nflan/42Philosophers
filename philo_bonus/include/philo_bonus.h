@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 11:49:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/22 11:34:23 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/27 13:03:52 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct s_all
 	int				died;
 	long long		first_timeval;
 	char			*sem_e;
-sem_t			*eat;
+	sem_t			*eat;
 	char			*sem;
 	sem_t			*forks;
 	char			*sem_d;
@@ -63,7 +63,7 @@ sem_t			*eat;
 	sem_t			*time;
 	char			*sem_p;
 	sem_t			*print;
-	t_phil			philo[210];
+	t_phil			philo[300];
 //	pthread_t		thread_id;
 }	t_all;
 
@@ -87,9 +87,9 @@ int				ft_putstr_fd(char *s, int fd);
 long long		ft_atoi(const char *s);
 unsigned int	ft_strlen(const char *s1);
 char			*ft_strjoin(const char *s1, const char *s2);
-char			*ft_itoa(int nb);
-char			ft_pos(int i, int nb);
-int				ft_size_int(int nb);
+char			*ft_itoa(long long nb);
+char			ft_pos(int i, long long nb);
+int				ft_size_long(long long nb);
 // PARSE
 int				ft_is_number(int ac, char **av, int error);
 int				ft_parsing(int ac, char **av, int error);

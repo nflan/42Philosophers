@@ -6,17 +6,17 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:06:51 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/20 12:06:53 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/27 12:24:55 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_bonus.h"
 
-int	ft_size_int(int nb)
+int	ft_size_long(long long nb)
 {
-	unsigned int	number;
-	unsigned int	base_len;
-	int				number_len;
+	long long	number;
+	int			base_len;
+	int			number_len;
 
 	number_len = 0;
 	base_len = 10;
@@ -33,7 +33,7 @@ int	ft_size_int(int nb)
 	return (number_len);
 }
 
-char	ft_pos(int i, int nb)
+char	ft_pos(int i, long long nb)
 {
 	char			pos;
 	unsigned int	nombre;
@@ -53,7 +53,7 @@ char	ft_pos(int i, int nb)
 	return (pos);
 }
 
-char	*ft_itoa(int nb)
+char	*ft_itoa(long long nb)
 {
 	char	*str;
 	int		int_len;
@@ -61,7 +61,7 @@ char	*ft_itoa(int nb)
 	int		len;
 
 	i = 0;
-	int_len = ft_size_int(nb);
+	int_len = ft_size_long(nb);
 	len = int_len;
 	if (nb < 0)
 		len++;

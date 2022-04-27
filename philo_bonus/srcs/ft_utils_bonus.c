@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/21 18:14:22 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/27 12:57:46 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,40 @@ void	ft_usleep(long long time, t_all *g)
 	}
 }
 
+void	ft_putchar(char c)
+{
+	write(1, &c, 1);
+}
+
+void	ft_putnbr(long long n)
+{
+	if (n >= 10)
+	{
+		ft_putnbr(n / 10);
+		ft_putnbr(n % 10);
+	}
+	else
+		ft_putchar(n + '0');
+}
+
 void	ft_action_print(t_all *g, int id, char *str)
 {
 	long long	time;
+//	char		*tps;
+//	char		*i;
 
+//	i = ft_itoa(id);
+//	tps = ft_itoa(time);
 	sem_wait(g->print);
 	time = ft_get_time(g) - g->first_timeval;
 	if (!g->death->__align)
-		printf("%lld %d %s\n", time, id + 1, str);
+	{
+		ft_putnbr(time);
+//		write(1, tps, ft_strlen(tps));
+		write(1, " ", 1);
+	//	write(1, i, ft_strlen(tps));
+		ft_putnbr(id + 1);
+		write(1, str, ft_strlen(str));
+	}
 	sem_post(g->print);
 }

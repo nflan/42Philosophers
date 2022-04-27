@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:08:42 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/26 16:52:44 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/27 17:20:40 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ typedef struct s_all
 // INIT
 int			ft_init_mutex(t_all *g);
 int			ft_init_philo(t_all *g);
-void		ft_init_all(t_all *g, char **av);
+int			ft_init_all(t_all *g, char **av);
 
 // PHILO
 int			ft_philosophers(t_all *g);

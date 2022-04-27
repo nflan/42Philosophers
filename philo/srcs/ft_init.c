@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:25:00 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/26 14:49:26 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/27 17:23:55 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_init_mutex(t_all *g)
 	int	i;
 
 	i = g->nbphilo;
-	while (i-- > 0)
+	while (--i >= 0)
 		if (pthread_mutex_init(&g->forks[i], NULL))
 			return (1);
 	if (pthread_mutex_init(&g->lock, NULL))
@@ -31,8 +31,8 @@ int	ft_init_philo(t_all *g)
 {
 	int	i;
 
-	i = 0;
-	while (i < g->nbphilo)
+	i = g->nbphilo;
+	while (--i >= 0)
 	{
 		g->philo[i].id = i;
 		g->philo[i].x_ate = 0;
@@ -41,12 +41,11 @@ int	ft_init_philo(t_all *g)
 		g->philo[i].last_meal = 0;
 		g->philo[i].g = g;
 //		printf("g->philo[i] left %d\ng->philo[i] right %d\n", g->philo[i].left_fork_id, g->philo[i].right_fork_id);
-		i++;
 	}
 	return (0);
 }
 
-void	ft_init_all(t_all *g, char **av)
+int	ft_init_all(t_all *g, char **av)
 {
 	g->nbphilo = ft_atoi(av[1]);
 	g->tdie = ft_atoi(av[2]);
@@ -54,10 +53,16 @@ void	ft_init_all(t_all *g, char **av)
 	g->tsleep = ft_atoi(av[4]);
 	g->died = 0;
 	g->all_ate = 0;
-	if (av[5])
+	if (av[5] && ft_atoi(av[5]) >= 0)
+	{
 		g->nbeat = ft_atoi(av[5]);
+		if (!g->nbeat)
+			return (0);
+	}
 	else
 		g->nbeat = -1;
-	ft_init_mutex(g);
+	if (ft_init_mutex(g))
+		return (ft_print_error("Mutex error\n"));
 	ft_init_philo(g);
+	return (0);
 }
