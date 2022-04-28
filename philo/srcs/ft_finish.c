@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:31:57 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/26 15:59:06 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/28 17:18:37 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,14 @@ void	ft_death_checker(t_all *g, t_phil *phil)
 		i = -1;
 		while (++i < g->nbphilo && !g->died)
 		{
-			pthread_mutex_lock(&g->meal_check);
 			if (ft_time_check(phil[i].last_meal, ft_get_time()) > g->tdie)
 			{
-				ft_action_print(g, i, "died");
+				ft_action_print(g, i, " died\n");
+				pthread_mutex_lock(&g->meal_check);
 				g->died = 1;
+				pthread_mutex_unlock(&g->meal_check);
 			}
-			pthread_mutex_unlock(&g->meal_check);
-			ft_usleep(g->teat / 200, g);
+			usleep(1500);
 		}
 		if (g->died)
 			break ;

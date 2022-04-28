@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:08:42 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/27 17:20:40 by nflan            ###   ########.fr       */
+/*   Updated: 2022/04/28 18:00:38 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,8 @@ void		ft_usleep(long long time, t_all *g);
 void		ft_action_print(t_all *g, int id, char *str);
 
 // TOOLS
-int			ft_print_error(char *str);
-void		ft_bzero(void *s, size_t n);
-void		*ft_calloc(size_t nmemb, size_t size);
 int			ft_putstr_fd(char *s, int fd);
+int			ft_print_error(char *str, int fd);
 long long	ft_atoi(const char *s);
 
 // PARSE
