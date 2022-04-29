@@ -26,15 +26,15 @@ void	*ft_death_checker(void *arg)
 		{
 		//	printf("temps entre last repas et mort = %lld && id = %d\n", ft_time_check(phil->last_meal, ft_get_time(g)), phil->id + 1);
 			ft_action_print(g, phil->id, " died\n");
-			break ;
+			sem_post(g->death);
 		}
 		if (phil->id % 2)
 			if (g->nbeat != -1 && phil->x_ate == g->nbeat)
-				break ;
+				sem_post(g->death);
 //		ft_usleep(1, g);;
 	}
 	//if (g->forks->__align < 1)
-	sem_post(g->death);
+//	sem_post(g->death);
 	sem_post(g->forks);
 	return (NULL);
 }

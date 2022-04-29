@@ -61,7 +61,7 @@ int	ft_init_sem(t_all *g)
 //	g->time = sem_open(g->sem_t, O_CREAT, 0660, g->nbphilo);
 //	if (g->time == SEM_FAILED)
 //		return (ft_print_error("Sem open failed"));
-	if (g->forks == SEM_FAILED || g->death == SEM_FAILED || g->eat == SEM_FAILED)
+	if (g->forks == SEM_FAILED || g->death == SEM_FAILED || g->eat == SEM_FAILED || g->print == SEM_FAILED)
 		return (ft_print_error("Sem open failed"));
 	return (0);
 }
@@ -78,7 +78,7 @@ int	ft_init_all(t_all *g, char **av)
 	{
 		if (ft_atoi(av[5]) == 0)
 			return (2);
-		g->nbeat = ft_atoi(av[5]) + 1;
+		g->nbeat = ft_atoi(av[5]);
 	}
 	else
 		g->nbeat = -1;
@@ -112,7 +112,12 @@ void	*ft_thread(t_all *g, t_phil phil, int i)
 	if (ft_init_philo(g, &phil, i))
 		return (ft_end_philo(g, 1));
 	if (phil.id % 2)
-		ft_usleep(g->teat - 10, g);
+	{
+		usleep(g->teat * 100);
+		while (g->forks->__align == 0 && g->forks->__align == 0)
+		{
+		}
+	}
 	while (!g->death->__align)
 	{
 		ft_philo_eats(g, &phil);
@@ -133,20 +138,23 @@ int	ft_philosophers(t_all *g)
 //	t_phil	*phil;
 	int		i;
 
-	i = -1;
+	i = -2;
 	g->first_timeval = ft_get_time(g);
 //	while (++i < g->nbphilo)
 //	i = -1;
-	while (++i < g->nbphilo)
+	while (i < g->nbphilo)
 	{
+		i += 2;
 		g->philo[i].child = fork();
 		if ((int) g->philo[i].child == -1)
 			return (ft_print_error("Child error"));
 		else if ((int) g->philo[i].child == 0)
-		{
 			if (ft_thread(g, g->philo[i], i))
 				return (1);
-		}
+		if (g->nbphilo % 2 && i == g->nbphilo - 1)
+			i = -1;
+		else if (g->nbphilo % 2 == 0 && i == g->nbphilo)
+			i = -1;
 	}
 	i = -1;
 	while (++i < g->nbphilo)
@@ -168,5 +176,5 @@ int	main(int ac, char **av)
 	if (!init)
 		if (ft_philosophers(&g))
 			return (ft_print_error("Thread error"));
-	return (0);
+	return (init);
 }
