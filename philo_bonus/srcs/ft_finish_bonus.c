@@ -28,13 +28,15 @@ void	*ft_death_checker(void *arg)
 			ft_action_print(g, phil->id, " died\n");
 			sem_post(g->death);
 		}
-		if (phil->id % 2)
-			if (g->nbeat != -1 && phil->x_ate == g->nbeat)
+//		if (phil->id % 2)
+//			if (g->nbeat != -1 && phil->x_ate == g->nbeat + 1)
+		if (g->nbeat > 0 && !g->eat->__align)
 				sem_post(g->death);
-//		ft_usleep(1, g);;
+		usleep(1500);
 	}
 	//if (g->forks->__align < 1)
 //	sem_post(g->death);
+	sem_post(g->eat);
 	sem_post(g->forks);
 	return (NULL);
 }

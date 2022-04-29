@@ -35,7 +35,6 @@
 typedef struct s_phil
 {
 	int				id;
-	int 			x_ate;
 	long long		last_meal;
 	struct s_all	*g;
 	pthread_t		thread_id;

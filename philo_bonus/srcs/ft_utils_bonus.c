@@ -64,9 +64,10 @@ void	ft_action_print(t_all *g, int id, char *str)
 //	i = ft_itoa(id);
 //	tps = ft_itoa(time);
 	sem_wait(g->print);
-	time = ft_get_time(g) - g->first_timeval;
 	if (!g->death->__align)
 	{
+		time = ft_get_time(g) - g->first_timeval;
+	//	printf("%lld %d %s", time, id + 1, str);
 		ft_putnbr(time);
 //		write(1, tps, ft_strlen(tps));
 		write(1, " ", 1);
