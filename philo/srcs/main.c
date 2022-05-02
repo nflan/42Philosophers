@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:07:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/28 17:33:48 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/02 16:51:59 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ int	main(int ac, char **av)
 		return (0);
 	if (ft_init_all(&g, av))
 		return (1);
-	if (!g.nbeat)
-		return (0);
 	if (ft_philosophers(&g))
 		return (ft_print_error("Threads init error", 1));
 	return (0);

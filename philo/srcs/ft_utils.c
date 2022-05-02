@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/28 17:59:00 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/02 17:25:11 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,19 +34,8 @@ void	ft_usleep(long long time, t_all *g)
 	{
 		if (ft_time_check(i, ft_get_time()) >= time)
 			break ;
-		usleep(50);
+		usleep(500);
 	}
-}
-
-int	ft_strlen(char *str)
-{
-	int	i;
-
-	i = 0;
-	if (str)
-		while (str[i])
-			i++;
-	return (i);
 }
 
 void	ft_action_print(t_all *g, int id, char *str)
@@ -54,10 +43,8 @@ void	ft_action_print(t_all *g, int id, char *str)
 	long long	time;
 
 	pthread_mutex_lock(&g->lock);
+	time = ft_get_time() - g->first_timeval;
 	if (!g->died && !g->all_ate)
-	{
-		time = ft_get_time() - g->first_timeval;
-		printf("%lld %d %s", time, id + 1, str);
-	}
+		printf("%lld %d%s", time, id + 1, str);
 	pthread_mutex_unlock(&g->lock);
 }

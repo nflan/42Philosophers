@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:30:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/28 17:42:41 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/02 17:35:24 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,10 @@ int	ft_philosophers(t_all *g)
 			i = -1;
 		else if (g->nbphilo % 2 == 0 && i == g->nbphilo)
 			i = -1;
+		if (i == -1)
+			usleep(20000);
 	}
-	ft_death_checker(g, g->philo);
+	ft_death_checker(g, g->philo, 0);
 	ft_end_philo(g, phil);
 	return (0);
 }
@@ -47,14 +49,6 @@ void	*ft_thread(void *arg)
 	phil = (t_phil *)arg;
 	g = phil->g;
 	ft_action_print(g, phil->id, " is thinking\n");
-	if (phil->id % 2)
-	{
-		usleep(g->teat * 100);
-		while (g->forks[phil->right_fork_id].__align == 0
-			&& g->forks[phil->left_fork_id].__align == 0)
-		{
-		}
-	}
 	while (!g->died && !g->all_ate)
 	{
 		ft_philo_eats(phil, g);

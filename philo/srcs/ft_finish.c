@@ -6,16 +6,15 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:31:57 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/28 17:18:37 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/02 17:34:38 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
-void	ft_death_checker(t_all *g, t_phil *phil)
+void	ft_death_checker(t_all *g, t_phil *phil, int i)
 {
-	int	i;
-
+	usleep(g->tdie * 1000);
 	while (!g->all_ate)
 	{
 		i = -1;
@@ -27,8 +26,9 @@ void	ft_death_checker(t_all *g, t_phil *phil)
 				pthread_mutex_lock(&g->meal_check);
 				g->died = 1;
 				pthread_mutex_unlock(&g->meal_check);
+				break ;
 			}
-			usleep(1500);
+			usleep(1000);
 		}
 		if (g->died)
 			break ;
