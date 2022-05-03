@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/27 12:57:46 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/03 19:12:23 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	ft_usleep(long long time, t_all *g)
 	long long	i;
 
 	i = ft_get_time(g);
-	while (!g->death->__align)
+	while (g->death->__align)
 	{
 		if (ft_time_check(i, ft_get_time(g)) >= time)
 			break ;
@@ -46,34 +46,43 @@ void	ft_putchar(char c)
 
 void	ft_putnbr(long long n)
 {
-	if (n >= 10)
+	int			len;
+	int			tmp_len;
+	long long	tmp;
+
+	tmp = n;
+	len = 1;
+	while (tmp >= 10)
 	{
-		ft_putnbr(n / 10);
-		ft_putnbr(n % 10);
+		tmp = tmp / 10;
+		len++;
 	}
-	else
-		ft_putchar(n + '0');
+	while (len-- > 0)
+	{
+		tmp_len = len;
+		tmp = n;
+		while (tmp_len-- > 0)
+			tmp = tmp / 10;
+		tmp = tmp % 10;
+		tmp = tmp + '0';
+		write(1, &tmp, 1);
+	}
+	write(1, " ", 1);
 }
 
 void	ft_action_print(t_all *g, int id, char *str)
 {
 	long long	time;
-//	char		*tps;
-//	char		*i;
 
-//	i = ft_itoa(id);
-//	tps = ft_itoa(time);
 	sem_wait(g->print);
-	if (!g->death->__align)
+	time = ft_get_time(g) - g->first_timeval;
+	sem_wait(g->die);
+	if (g->death->__align)
 	{
-		time = ft_get_time(g) - g->first_timeval;
-	//	printf("%lld %d %s", time, id + 1, str);
 		ft_putnbr(time);
-//		write(1, tps, ft_strlen(tps));
-		write(1, " ", 1);
-	//	write(1, i, ft_strlen(tps));
 		ft_putnbr(id + 1);
 		write(1, str, ft_strlen(str));
 	}
+	sem_post(g->die);
 	sem_post(g->print);
 }

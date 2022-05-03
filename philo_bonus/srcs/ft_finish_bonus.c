@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:31:57 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/27 13:29:33 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/03 19:12:14 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,25 +19,24 @@ void	*ft_death_checker(void *arg)
 
 	phil = (t_phil *)arg;
 	g = phil->g;
-	while (!g->death->__align)
+	usleep(g->tdie * 900);
+	while (!g->died)
 	{
-//		printf("id = %d && last meal = %lld && time = %lld\n", phil->id, phil->last_meal, ft_get_time(g));
-		if (!g->death->__align && ft_time_check(phil->last_meal, ft_get_time(g)) > g->tdie)
+		sem_wait(g->die);
+		if (ft_time_check(phil->last_meal, ft_get_time(g)) > g->tdie && !g->death->__align)
 		{
-		//	printf("temps entre last repas et mort = %lld && id = %d\n", ft_time_check(phil->last_meal, ft_get_time(g)), phil->id + 1);
-			ft_action_print(g, phil->id, " died\n");
-			sem_post(g->death);
+			ft_action_print(g, phil->id, "died\n");
+			sem_wait(g->death);
 		}
-//		if (phil->id % 2)
-//			if (g->nbeat != -1 && phil->x_ate == g->nbeat + 1)
-		if (g->nbeat > 0 && !g->eat->__align)
-				sem_post(g->death);
-		usleep(1500);
+		else if (g->nbeat > 0 && !g->eat->__align && g->death->__align)
+			sem_wait(g->death);
+		if (!g->death->__align)
+			g->died = 1;
+		sem_post(g->die);
+		ft_usleep(1, g);
 	}
-	//if (g->forks->__align < 1)
-//	sem_post(g->death);
-	sem_post(g->eat);
 	sem_post(g->forks);
+	sem_close(g->forks);
 	return (NULL);
 }
 
@@ -49,10 +48,13 @@ void	*ft_end_philo(t_all *g, int ret)
 		sem_post(g->forks);
 		usleep(2000);
 	}
-	sem_close(g->forks);
+	sem_post(g->death);
 	sem_close(g->death);
+	sem_post(g->eat);
 	sem_close(g->eat);
-	sem_close(g->time);
+	sem_post(g->die);
+	sem_close(g->die);
+//	sem_close(g->time);
 	sem_close(g->print);
 	exit (ret);
 }

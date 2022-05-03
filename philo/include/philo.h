@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:08:42 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/02 17:16:50 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/03 11:40:29 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void		ft_end_philo(t_all *g, t_phil *phil);
 long long	ft_time_check(long long past, long long now);
 long long	ft_get_time(void);
 void		ft_usleep(long long time, t_all *g);
-void		ft_action_print(t_all *g, int id, char *str);
+void		ft_action_print(t_all *g, int id, char *str, int end);
 
 // TOOLS
 int			ft_putstr_fd(char *s, int fd);

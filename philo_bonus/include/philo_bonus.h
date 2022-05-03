@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 11:49:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/04/27 13:03:52 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/03 15:27:58 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ typedef struct s_all
 	sem_t			*end;
 	char			*sem_t;
 	sem_t			*time;
+	char			*sem_die;
+	sem_t			*die;
 	char			*sem_p;
 	sem_t			*print;
 	t_phil			philo[300];
@@ -77,6 +79,7 @@ void		*ft_end_philo(t_all *g, int ret);
 long long	ft_time_check(long long past, long long now);
 long long	ft_get_time(t_all *g);
 void		ft_usleep(long long time, t_all *g);
+void		ft_putnbr(long long n);
 void		ft_action_print(t_all *g, int id, char *str);
 
 // TOOLS

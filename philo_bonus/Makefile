@@ -6,7 +6,7 @@
 #    By: nflan <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/19 11:05:20 by nflan             #+#    #+#              #
-#    Updated: 2022/04/27 13:30:28 by nflan            ###   ########.fr        #
+#    Updated: 2022/05/03 12:01:27 by nflan            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ all:	${NAME}
 bonus:	${NAME}
 
 $(NAME):	${OBJS} ${INC}
-	${CC} ${CFLAGS} -pthread ${OBJS} -I ${INC} -o ${NAME} -g3
+	${CC} ${CFLAGS} -pthread ${OBJS} -I ${INC} -o ${NAME}
 
 $(OBJS):	${INC}
 

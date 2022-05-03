@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:30:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/02 17:35:24 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/03 11:40:54 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ int	ft_philosophers(t_all *g)
 			i = -1;
 		else if (g->nbphilo % 2 == 0 && i == g->nbphilo)
 			i = -1;
-		if (i == -1)
-			usleep(20000);
 	}
 	ft_death_checker(g, g->philo, 0);
 	ft_end_philo(g, phil);
@@ -48,13 +46,15 @@ void	*ft_thread(void *arg)
 
 	phil = (t_phil *)arg;
 	g = phil->g;
-	ft_action_print(g, phil->id, " is thinking\n");
+	if (phil->id % 2)
+		ft_usleep(g->teat / 2, g);
+	ft_action_print(g, phil->id, " is thinking\n", 0);
 	while (!g->died && !g->all_ate)
 	{
 		ft_philo_eats(phil, g);
-		ft_action_print(g, phil->id, " is sleeping\n");
+		ft_action_print(g, phil->id, " is sleeping\n", 0);
 		ft_usleep(g->tsleep, g);
-		ft_action_print(g, phil->id, " is thinking\n");
+		ft_action_print(g, phil->id, " is thinking\n", 0);
 	}
 	return (NULL);
 }
@@ -62,10 +62,10 @@ void	*ft_thread(void *arg)
 void	ft_philo_eats(t_phil *phil, t_all *g)
 {
 	pthread_mutex_lock(&g->forks[phil->left_fork_id]);
-	ft_action_print(g, phil->id, " has taken a fork\n");
+	ft_action_print(g, phil->id, " has taken a fork\n", 0);
 	pthread_mutex_lock(&g->forks[phil->right_fork_id]);
-	ft_action_print(g, phil->id, " has taken a fork\n");
-	ft_action_print(g, phil->id, " is eating\n");
+	ft_action_print(g, phil->id, " has taken a fork\n", 0);
+	ft_action_print(g, phil->id, " is eating\n", 0);
 	pthread_mutex_lock(&g->meal_check);
 	phil->last_meal = ft_get_time();
 	phil->x_ate++;
