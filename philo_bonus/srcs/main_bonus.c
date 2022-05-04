@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:06:37 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/03 19:14:10 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/04 17:25:22 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	ft_init_sem(t_all *g)
 	g->sem_d = "DEATH";
 	g->sem_p = "PRINT";
 	g->sem_die = "DIE";
-//	g->sem_t = "TIME";
+	g->sem_t = "TIME";
 	sem_unlink(g->sem);
 	sem_unlink(g->sem_d);
 	sem_unlink(g->sem_p);
@@ -47,11 +47,11 @@ int	ft_init_sem(t_all *g)
 	g->death = sem_open(g->sem_d, O_CREAT, 0660, 1);
 	g->print = sem_open(g->sem_p, O_CREAT, 0660,1);
 	g->die = sem_open(g->sem_die, O_CREAT, 0660,1);
-//	sem_unlink(g->sem_t);
-//	g->time = sem_open(g->sem_t, O_CREAT, 0660, g->nbphilo);
-//	if (g->time == SEM_FAILED)
-//		return (ft_print_error("Sem open failed"));
-	if (g->forks == SEM_FAILED || g->death == SEM_FAILED || g->print == SEM_FAILED)
+	sem_unlink(g->sem_t);
+	g->time = sem_open(g->sem_t, O_CREAT, 0660, g->nbphilo);
+	if (g->time == SEM_FAILED)
+		return (ft_print_error("Sem open failed"));
+	if (g->forks == SEM_FAILED || g->death == SEM_FAILED || g->print == SEM_FAILED || g->die == SEM_FAILED)
 		return (ft_print_error("Sem open failed"));
 	return (0);
 }
@@ -82,7 +82,7 @@ int	ft_init_all(t_all *g, char **av)
 	return (0);
 }
 
-void	ft_philo_eats(t_all *g, t_phil *phil)
+/*void	ft_philo_eats(t_all *g, t_phil *phil)
 {
 	sem_wait(g->forks);
 	ft_action_print(g, phil->id, "has taken a fork\n");
@@ -117,7 +117,7 @@ void	*ft_thread(t_all *g, t_phil phil, int i)
 	}
 	else
 		ft_action_print(g, phil.id, "is thinking\n");
-	while (1)
+	while (g->death->__align)
 	{
 		ft_philo_eats(g, &phil);
 		sem_wait(g->die);
@@ -129,6 +129,68 @@ void	*ft_thread(t_all *g, t_phil phil, int i)
 		ft_action_print(g, phil.id, "is thinking\n");
 	}
 	pthread_join(phil.thread_id, NULL);
+//	pthread_detach(phil.thread_id);
+	return (ft_end_philo(g, 0));
+}*/
+
+void	ft_philo_eats(t_all *g, t_phil *phil)
+{
+//	sem_wait(g->print);
+//	write(1, "forks = ", 6);
+//	ft_putnbr(g->forks->__align);
+//	write(1, "\n", 1);
+//	sem_post(g->print);
+	sem_wait(g->forks);
+	ft_action_print(g, phil->id, "has taken a fork\n");
+	sem_wait(g->forks);
+	ft_action_print(g, phil->id, "has taken a fork\n");
+	ft_action_print(g, phil->id, "is eating\n");
+	sem_wait(g->die);
+	phil->last_meal = ft_get_time();
+	sem_post(g->die);
+	ft_usleep(g->teat, g);
+	sem_post(g->forks);
+	sem_post(g->forks);
+	if (g->nbeat != -1 && g->eat->__align && g->death->__align)
+		sem_wait(g->eat);
+//	{
+//		write(1, "allo\n", 5);
+//	}
+}
+
+void	*ft_philo_t(void *arg)
+{
+	t_phil	*phil;
+	t_all	*g;
+
+	phil = (t_phil *)arg;
+	g = phil->g;
+	ft_action_print(g, phil->id, "is thinking\n");
+	while (!g->died)
+	{
+		ft_philo_eats(g, phil);
+		sem_wait(g->die);
+		if (g->died)
+			break ;
+		sem_post(g->die);
+		ft_action_print(g, phil->id, "is sleeping\n");
+		ft_usleep(g->tsleep, g);
+		ft_action_print(g, phil->id, "is thinking\n");
+	}
+	return (NULL);
+}
+
+void	*ft_thread(t_all *g, t_phil phil)
+{
+//	if (pthread_create(&phil.thread_id, NULL, ft_death_checker, &phil))
+//		return (ft_end_philo(g, 1));
+	if (phil.id % 2)
+		usleep(g->teat * 800);
+	if (pthread_create(&phil.philo_id, NULL, ft_philo_t, &phil))
+		return (ft_end_philo(g, 1));
+	ft_death_checker(&phil);
+	pthread_join(phil.philo_id, NULL);
+//	pthread_detach(phil.thread_id);
 	return (ft_end_philo(g, 0));
 }
 
@@ -138,7 +200,7 @@ int	ft_philosophers(t_all *g)
 	int		i;
 
 	i = -2;
-	g->first_timeval = ft_get_time(g);
+	g->first_timeval = ft_get_time();
 	while (i < g->nbphilo)
 	{
 		i += 2;
@@ -149,8 +211,8 @@ int	ft_philosophers(t_all *g)
 				return (ft_print_error("Child error"));
 			else if ((int) g->philo[i].child == 0)
 			{
-				g->philo[i].last_meal = ft_get_time(g);
-				if (ft_thread(g, g->philo[i], i))
+				g->philo[i].last_meal = ft_get_time();
+				if (ft_thread(g, g->philo[i]))
 					return (1);
 			}
 		}

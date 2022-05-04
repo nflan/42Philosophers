@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/03 19:12:23 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/04 16:29:57 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,10 @@ long long	ft_time_check(long long past, long long now)
 	return (now - past);
 }
 
-long long	ft_get_time(t_all *g)
+long long	ft_get_time(void)
 {
 	struct timeval	tv;
 
-	(void)g;
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
@@ -30,10 +29,10 @@ void	ft_usleep(long long time, t_all *g)
 {
 	long long	i;
 
-	i = ft_get_time(g);
+	i = ft_get_time();
 	while (g->death->__align)
 	{
-		if (ft_time_check(i, ft_get_time(g)) >= time)
+		if (ft_time_check(i, ft_get_time()) >= time)
 			break ;
 		usleep(50);
 	}
@@ -75,7 +74,7 @@ void	ft_action_print(t_all *g, int id, char *str)
 	long long	time;
 
 	sem_wait(g->print);
-	time = ft_get_time(g) - g->first_timeval;
+	time = ft_get_time() - g->first_timeval;
 	sem_wait(g->die);
 	if (g->death->__align)
 	{

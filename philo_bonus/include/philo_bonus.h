@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 11:49:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/03 15:27:58 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/04 16:45:43 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_phil
 	long long		last_meal;
 	struct s_all	*g;
 	pthread_t		thread_id;
+	pthread_t		philo_id;
 	pid_t			child;
 }	t_phil;
 
@@ -77,7 +78,7 @@ void		*ft_end_philo(t_all *g, int ret);
 
 // UTILS
 long long	ft_time_check(long long past, long long now);
-long long	ft_get_time(t_all *g);
+long long	ft_get_time(void);
 void		ft_usleep(long long time, t_all *g);
 void		ft_putnbr(long long n);
 void		ft_action_print(t_all *g, int id, char *str);
