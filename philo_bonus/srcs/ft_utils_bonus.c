@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/04 16:29:57 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/05 12:37:59 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ void	ft_usleep(long long time, t_all *g)
 	long long	i;
 
 	i = ft_get_time();
-	while (g->death->__align)
+	(void)g;
+	while (1)
 	{
 		if (ft_time_check(i, ft_get_time()) >= time)
 			break ;
@@ -69,19 +70,32 @@ void	ft_putnbr(long long n)
 	write(1, " ", 1);
 }
 
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	if (n == 0)
+		return (0);
+	while (s1[i] == s2[i] && i < (n - 1) && s1[i] && s2[i])
+		i++;
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
+
 void	ft_action_print(t_all *g, int id, char *str)
 {
 	long long	time;
 
 	sem_wait(g->print);
 	time = ft_get_time() - g->first_timeval;
-	sem_wait(g->die);
-	if (g->death->__align)
-	{
+//	sem_wait(g->die);
+//	if (!g->death->__align)
+//	{
 		ft_putnbr(time);
 		ft_putnbr(id + 1);
 		write(1, str, ft_strlen(str));
-	}
-	sem_post(g->die);
-	sem_post(g->print);
+//	}
+//	sem_post(g->die);	
+	if (ft_strncmp(str, " died\n", 7))
+		sem_post(g->print);
 }

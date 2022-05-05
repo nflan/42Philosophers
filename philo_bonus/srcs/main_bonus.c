@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:06:37 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/04 17:25:22 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/05 15:01:31 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,15 +62,16 @@ int	ft_init_all(t_all *g, char **av)
 	g->tdie = ft_atoi(av[2]);
 	g->teat = ft_atoi(av[3]);
 	g->tsleep = ft_atoi(av[4]);
+	g->eat_count = 0;
 	g->died = 0;
 	if (av[5] && ft_atoi(av[5]) >= 0)
 	{
 		if (ft_atoi(av[5]) == 0)
 			return (2);
-		g->nbeat = ft_atoi(av[5]);
+		g->nbeat = ft_atoi(av[5]) + 1;
 		g->sem_e = "EAT";
 		sem_unlink(g->sem_e);
-		g->eat = sem_open(g->sem_e, O_CREAT, 0660, g->nbeat * g->nbphilo);
+		g->eat = sem_open(g->sem_e, O_CREAT, 0660, 1);
 		if (g->eat == SEM_FAILED)
 			return (ft_print_error("Sem open failed"));
 	}
@@ -82,7 +83,7 @@ int	ft_init_all(t_all *g, char **av)
 	return (0);
 }
 
-/*void	ft_philo_eats(t_all *g, t_phil *phil)
+void	ft_philo_eats(t_all *g, t_phil *phil)
 {
 	sem_wait(g->forks);
 	ft_action_print(g, phil->id, "has taken a fork\n");
@@ -90,11 +91,15 @@ int	ft_init_all(t_all *g, char **av)
 	ft_action_print(g, phil->id, "has taken a fork\n");
 	ft_action_print(g, phil->id, "is eating\n");
 //	sem_wait(g->eat);
-	if (g->nbeat > 0 && g->eat->__align)
-		sem_wait(g->eat);
-	sem_wait(g->die);
-	phil->last_meal = ft_get_time(g);
-	sem_post(g->die);
+	if (g->nbeat != -1)
+	{
+	//	sem_wait(g->eat);
+		g->eat_count++;
+	//	sem_post(g->eat);
+	}
+//	sem_wait(g->die);
+	phil->last_meal = ft_get_time();
+//	sem_post(g->die);
 //	printf("last meal = %lld && id = %d\n", ft_time_check(g->first_timeval, phil->last_meal), phil->id + 1);
 //	sem_post(g->eat);
 	ft_usleep(g->teat, g);
@@ -102,38 +107,30 @@ int	ft_init_all(t_all *g, char **av)
 	sem_post(g->forks);
 }
 
-void	*ft_thread(t_all *g, t_phil phil, int i)
+void	*ft_thread(t_all *g, t_phil phil)
 {
-//	printf("i = %d\n", i);
-//	if (ft_init_philo(g, &phil, i))
-//		return (ft_end_philo(g, 1));
-	(void) i;
 	if (pthread_create(&phil.thread_id, NULL, ft_death_checker, &phil))
 		return (ft_end_philo(g, 1));
+	pthread_detach(phil.thread_id);
 	if (phil.id % 2)
-	{
 		ft_usleep(g->teat / 2, g);
-		ft_action_print(g, phil.id, "is thinking\n");
-	}
-	else
-		ft_action_print(g, phil.id, "is thinking\n");
-	while (g->death->__align)
+	while (1)
 	{
 		ft_philo_eats(g, &phil);
-		sem_wait(g->die);
-		if (g->died)
-			break ;
-		sem_post(g->die);
+//		sem_wait(g->die);
+//		if (g->died)
+//			break ;
+//		sem_post(g->die);
 		ft_action_print(g, phil.id, "is sleeping\n");
 		ft_usleep(g->tsleep, g);
 		ft_action_print(g, phil.id, "is thinking\n");
 	}
-	pthread_join(phil.thread_id, NULL);
-//	pthread_detach(phil.thread_id);
-	return (ft_end_philo(g, 0));
-}*/
+//	pthread_join(phil.thread_id, NULL);
+//	return (ft_end_philo(g, 0));
+	return (NULL);
+}
 
-void	ft_philo_eats(t_all *g, t_phil *phil)
+/*void	ft_philo_eats(t_all *g, t_phil *phil)
 {
 //	sem_wait(g->print);
 //	write(1, "forks = ", 6);
@@ -148,11 +145,11 @@ void	ft_philo_eats(t_all *g, t_phil *phil)
 	sem_wait(g->die);
 	phil->last_meal = ft_get_time();
 	sem_post(g->die);
+	if (g->nbeat != -1)
+		g->eat_count++;
 	ft_usleep(g->teat, g);
 	sem_post(g->forks);
 	sem_post(g->forks);
-	if (g->nbeat != -1 && g->eat->__align && g->death->__align)
-		sem_wait(g->eat);
 //	{
 //		write(1, "allo\n", 5);
 //	}
@@ -188,19 +185,27 @@ void	*ft_thread(t_all *g, t_phil phil)
 		usleep(g->teat * 800);
 	if (pthread_create(&phil.philo_id, NULL, ft_philo_t, &phil))
 		return (ft_end_philo(g, 1));
-	ft_death_checker(&phil);
-	pthread_join(phil.philo_id, NULL);
+	if (pthread_create(&phil.thread_id, NULL, ft_death_checker, &phil))
+		return (ft_end_philo(g, 1));
+	sem_wait(g->death);
+	printf("g->die = %ld\n", g->die->__align);
+	printf("g->death = %ld\n", g->death->__align);
+	printf("g->print = %ld\n", g->print->__align);
+	printf("g->eat = %ld\n", g->eat->__align);
+	printf("g->forks = %ld\n", g->forks->__align);
+//	pthread_join(phil.philo_id, NULL);
 //	pthread_detach(phil.thread_id);
 	return (ft_end_philo(g, 0));
-}
+}*/
 
-int	ft_philosophers(t_all *g)
+/*int	ft_philosophers(t_all *g)
 {
 //	t_phil	*phil;
 	int		i;
 
 	i = -2;
 	g->first_timeval = ft_get_time();
+	sem_wait(g->death);
 	while (i < g->nbphilo)
 	{
 		i += 2;
@@ -211,9 +216,9 @@ int	ft_philosophers(t_all *g)
 				return (ft_print_error("Child error"));
 			else if ((int) g->philo[i].child == 0)
 			{
-				g->philo[i].last_meal = ft_get_time();
 				if (ft_thread(g, g->philo[i]))
 					return (1);
+				g->philo[i].last_meal = ft_get_time();
 			}
 		}
 		if (g->nbphilo % 2 && i == g->nbphilo - 1)
@@ -222,8 +227,67 @@ int	ft_philosophers(t_all *g)
 			i = -1;
 	}
 	i = -1;
+	sem_wait(g->death);
 	while (++i < g->nbphilo)
-		waitpid(g->philo[i].child, &g->philo[i].child, 0);
+		kill(g->philo[i].child, SIGKILL);
+//		waitpid(g->philo[i].child, &g->philo[i].child, 0);
+	ft_end_philo(g, 0);
+	return (0);
+}*/
+
+void	*ft_launch(void *arg)
+{
+	int		i;
+	int		end;
+	t_all	*g;
+
+	g = (t_all *) arg;
+	i = g->in_i;
+	end = g->in_end;
+	while (i < end)
+	{
+		g->philo[i].child = fork();
+		if ((int) g->philo[i].child == -1)
+			return (NULL);
+		else if ((int) g->philo[i].child == 0)
+		{
+			g->philo[i].last_meal = ft_get_time();
+			if (ft_thread(g, g->philo[i]))
+				return (NULL);
+		}
+		i++;
+	}
+	return (NULL);
+}
+
+int	ft_philosophers(t_all *g)
+{
+	int			i;
+	pthread_t	thread[4];
+
+	i = 0;
+	g->in_i = 0;
+	g->in_end = g->nbphilo / 4;
+	g->first_timeval = ft_get_time();
+	sem_wait(g->death);
+	while (i < 4)
+	{
+		if (pthread_create(&thread[i], NULL, ft_launch, &g))
+			return (1);
+		g->in_i += g->in_end;
+		g->in_end += g->in_end;
+		if (i == 2)
+			g->in_end = g->nbphilo;
+//		i += g->nbphilo / 4;
+		i++;
+	}
+	i = -1;
+	sem_wait(g->death);
+	while (++i < g->nbphilo)
+		kill(g->philo[i].child, SIGKILL);
+//		waitpid(g->philo[i].child, &g->philo[i].child, 0);
+	for (i = 0; i < 4; i++)
+		pthread_join(thread[i], NULL);
 	ft_end_philo(g, 0);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 11:49:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/04 16:45:43 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/05 13:56:40 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,9 @@ typedef struct s_all
 	long long		tsleep;
 	int				nbeat;
 	int				died;
+	int				eat_count;
+	int				in_i;
+	int				in_end;
 	long long		first_timeval;
 	char			*sem_e;
 	sem_t			*eat;
@@ -66,6 +69,7 @@ typedef struct s_all
 	char			*sem_p;
 	sem_t			*print;
 	t_phil			philo[300];
+	pthread_t		thread_id;
 //	pthread_t		thread_id;
 }	t_all;
 

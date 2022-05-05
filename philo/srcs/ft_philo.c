@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:30:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/03 11:40:54 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/05 12:31:56 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void	*ft_thread(void *arg)
 	g = phil->g;
 	if (phil->id % 2)
 		ft_usleep(g->teat / 2, g);
-	ft_action_print(g, phil->id, " is thinking\n", 0);
 	while (!g->died && !g->all_ate)
 	{
 		ft_philo_eats(phil, g);
