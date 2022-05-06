@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 11:49:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/06 12:14:14 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/06 15:20:57 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,42 +35,24 @@
 typedef struct s_phil
 {
 	int				id;
-	long long		last_meal;
+	int				eat_count;
+	unsigned int	last_meal;
+	pid_t			pid;
 	struct s_all	*g;
-	pthread_t		thread_id;
-	pthread_t		philo_id;
-	pid_t			child;
 }	t_phil;
 
 typedef struct s_all
 {
-	int				nbphilo;
 	unsigned int	tdie;
 	unsigned int	teat;
 	unsigned int	tsleep;
-	int				nbeat;
-	int				died;
-	int				eat_count;
-	int				in_i;
-	int				in_end;
 	unsigned int	first_timeval;
-	char			*sem_e;
-	sem_t			*eat;
-	char			*sem;
+	int				nbphilo;
+	int				nbeat;
 	sem_t			*forks;
-	char			*sem_d;
 	sem_t			*death;
-	char			*sem_end;
-	sem_t			*end;
-	char			*sem_t;
-	sem_t			*time;
-	char			*sem_die;
-	sem_t			*die;
-	char			*sem_p;
 	sem_t			*print;
-	t_phil			philo[300];
-	pthread_t		thread_id;
-//	pthread_t		thread_id;
+	sem_t			*die;
 }	t_all;
 
 // MAIN
@@ -78,7 +60,7 @@ typedef struct s_all
 // FINISH
 //void		ft_death_checker(t_all *g, t_phil *phil);
 void		*ft_death_checker(void *arg);
-void		*ft_end_philo(t_all *g, int ret);
+void		ft_end_philo(t_all *g, t_phil *philo);
 
 // UTILS
 unsigned int	ft_time_check(unsigned int past, unsigned int now);
