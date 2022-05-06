@@ -6,18 +6,18 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/05 12:37:59 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/06 12:38:23 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_bonus.h"
 
-long long	ft_time_check(long long past, long long now)
+unsigned int	ft_time_check(unsigned int past, unsigned int now)
 {
 	return (now - past);
 }
 
-long long	ft_get_time(void)
+unsigned int	ft_get_time(void)
 {
 	struct timeval	tv;
 
@@ -25,12 +25,11 @@ long long	ft_get_time(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void	ft_usleep(long long time, t_all *g)
+void	ft_usleep(unsigned int time)
 {
-	long long	i;
+	unsigned int	i;
 
 	i = ft_get_time();
-	(void)g;
 	while (1)
 	{
 		if (ft_time_check(i, ft_get_time()) >= time)
@@ -44,7 +43,7 @@ void	ft_putchar(char c)
 	write(1, &c, 1);
 }
 
-void	ft_putnbr(long long n)
+void	ft_putnbr(unsigned int n)
 {
 	int			len;
 	int			tmp_len;
@@ -70,32 +69,26 @@ void	ft_putnbr(long long n)
 	write(1, " ", 1);
 }
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+void	ft_action_print(t_phil *phil, int end)
 {
-	size_t	i;
+	unsigned int	time;
 
-	i = 0;
-	if (n == 0)
-		return (0);
-	while (s1[i] == s2[i] && i < (n - 1) && s1[i] && s2[i])
-		i++;
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-}
-
-void	ft_action_print(t_all *g, int id, char *str)
-{
-	long long	time;
-
-	sem_wait(g->print);
-	time = ft_get_time() - g->first_timeval;
-//	sem_wait(g->die);
-//	if (!g->death->__align)
-//	{
-		ft_putnbr(time);
-		ft_putnbr(id + 1);
-		write(1, str, ft_strlen(str));
-//	}
-//	sem_post(g->die);	
-	if (ft_strncmp(str, " died\n", 7))
-		sem_post(g->print);
+	sem_wait(phil->g->print);
+	time = ft_get_time() - phil->g->first_timeval;
+	ft_putnbr(time);
+	ft_putnbr(phil->id + 1);
+//	write(1, str, ft_strlen(str));
+	if (end == 1)
+		write(1, "has taken a fork\n", 17);
+	else if (end == 2)
+		write(1, "is eating\n", 10);
+	else if (end == 3)
+		write(1, "is sleeping\n", 12);
+	else if (end == 4)
+		write(1, "is thinking\n", 12);
+	else if (!end)
+		write(1, "died\n", 5);
+	sem_post(phil->g->print);
+	if (!end)
+		sem_wait(phil->g->print);
 }

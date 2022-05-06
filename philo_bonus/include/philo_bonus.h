@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 11:49:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/05 13:56:40 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/06 12:14:14 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,15 @@ typedef struct s_phil
 typedef struct s_all
 {
 	int				nbphilo;
-	long long		tdie;
-	long long		teat;
-	long long		tsleep;
+	unsigned int	tdie;
+	unsigned int	teat;
+	unsigned int	tsleep;
 	int				nbeat;
 	int				died;
 	int				eat_count;
 	int				in_i;
 	int				in_end;
-	long long		first_timeval;
+	unsigned int	first_timeval;
 	char			*sem_e;
 	sem_t			*eat;
 	char			*sem;
@@ -81,11 +81,11 @@ void		*ft_death_checker(void *arg);
 void		*ft_end_philo(t_all *g, int ret);
 
 // UTILS
-long long	ft_time_check(long long past, long long now);
-long long	ft_get_time(void);
-void		ft_usleep(long long time, t_all *g);
-void		ft_putnbr(long long n);
-void		ft_action_print(t_all *g, int id, char *str);
+unsigned int	ft_time_check(unsigned int past, unsigned int now);
+unsigned int	ft_get_time(void);
+void		ft_usleep(unsigned int time);
+void		ft_putnbr(unsigned int n);
+void		ft_action_print(t_phil *phil, int end);
 
 // TOOLS
 void			ft_bzero(void *s, size_t n);

@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:31:57 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/05 12:40:14 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/06 12:33:00 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	*ft_death_checker(void *arg)
 		sem_wait(g->die);
 		if (ft_time_check(phil->last_meal, ft_get_time()) > g->tdie)
 		{
-			ft_action_print(g, phil->id, "died\n");
+			ft_action_print(phil, 0);
 			sem_post(g->death);
 			break ;
 		}

@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:06:37 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/05 15:01:31 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/06 12:34:39 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,23 @@ int	ft_init_all(t_all *g, char **av)
 	return (0);
 }
 
+void	ft_take_forks(t_phil *phil)
+{
+	sem_wait(phil->g->forks);
+	ft_action_print(phil, 1);
+	sem_wait(phil->g->forks);
+	ft_action_print(phil, 1);
+}
+
 void	ft_philo_eats(t_all *g, t_phil *phil)
 {
-	sem_wait(g->forks);
-	ft_action_print(g, phil->id, "has taken a fork\n");
-	sem_wait(g->forks);
-	ft_action_print(g, phil->id, "has taken a fork\n");
-	ft_action_print(g, phil->id, "is eating\n");
+	ft_take_forks(phil);
+//	sem_wait(g->forks);
+//	ft_action_print(g, phil->id, "has taken a fork\n", 1);
+//	sem_wait(g->forks);
+//	ft_action_print(g, phil->id, "has taken a fork\n", 1);
+//	ft_action_print(g, phil->id, "is eating\n", 2);
+	ft_action_print(phil, 2);
 //	sem_wait(g->eat);
 	if (g->nbeat != -1)
 	{
@@ -97,23 +107,29 @@ void	ft_philo_eats(t_all *g, t_phil *phil)
 		g->eat_count++;
 	//	sem_post(g->eat);
 	}
-//	sem_wait(g->die);
+	sem_wait(g->die);
 	phil->last_meal = ft_get_time();
-//	sem_post(g->die);
+	sem_post(g->die);
 //	printf("last meal = %lld && id = %d\n", ft_time_check(g->first_timeval, phil->last_meal), phil->id + 1);
 //	sem_post(g->eat);
-	ft_usleep(g->teat, g);
+	//ft_usleep(g->teat);
+	usleep(g->teat * 1000);
+	sem_post(g->forks);
+	sem_post(g->forks);
 	sem_post(g->forks);
 	sem_post(g->forks);
 }
 
 void	*ft_thread(t_all *g, t_phil phil)
 {
-	if (pthread_create(&phil.thread_id, NULL, ft_death_checker, &phil))
+	pthread_t	death;
+
+	if (pthread_create(&death, NULL, ft_death_checker, &phil))
 		return (ft_end_philo(g, 1));
-	pthread_detach(phil.thread_id);
+	pthread_detach(death);
 	if (phil.id % 2)
-		ft_usleep(g->teat / 2, g);
+		usleep(g->teat * 900);
+		//ft_usleep(g->teat - 10);
 	while (1)
 	{
 		ft_philo_eats(g, &phil);
@@ -121,9 +137,14 @@ void	*ft_thread(t_all *g, t_phil phil)
 //		if (g->died)
 //			break ;
 //		sem_post(g->die);
-		ft_action_print(g, phil.id, "is sleeping\n");
-		ft_usleep(g->tsleep, g);
-		ft_action_print(g, phil.id, "is thinking\n");
+	//	ft_action_print(g, phil.id, "is sleeping\n", 3);
+	//	ft_action_print(&phil, "is sleeping\n", 3);
+		ft_action_print(&phil, 3);
+	//	ft_action_print(g, phil.id, "is thinking\n", 4);
+		//ft_action_print(&phil, "is thinking\n", 4);
+	//	ft_usleep(g->tsleep);
+		usleep(g->tsleep * 1000);
+		ft_action_print(&phil, 4);
 	}
 //	pthread_join(phil.thread_id, NULL);
 //	return (ft_end_philo(g, 0));
@@ -198,7 +219,7 @@ void	*ft_thread(t_all *g, t_phil phil)
 	return (ft_end_philo(g, 0));
 }*/
 
-/*int	ft_philosophers(t_all *g)
+int	ft_philosophers(t_all *g)
 {
 //	t_phil	*phil;
 	int		i;
@@ -216,9 +237,9 @@ void	*ft_thread(t_all *g, t_phil phil)
 				return (ft_print_error("Child error"));
 			else if ((int) g->philo[i].child == 0)
 			{
+				g->philo[i].last_meal = ft_get_time();
 				if (ft_thread(g, g->philo[i]))
 					return (1);
-				g->philo[i].last_meal = ft_get_time();
 			}
 		}
 		if (g->nbphilo % 2 && i == g->nbphilo - 1)
@@ -233,9 +254,9 @@ void	*ft_thread(t_all *g, t_phil phil)
 //		waitpid(g->philo[i].child, &g->philo[i].child, 0);
 	ft_end_philo(g, 0);
 	return (0);
-}*/
+}
 
-void	*ft_launch(void *arg)
+/*void	*ft_launch(void *arg)
 {
 	int		i;
 	int		end;
@@ -246,6 +267,7 @@ void	*ft_launch(void *arg)
 	end = g->in_end;
 	while (i < end)
 	{
+		printf("i = %d\n", i);
 		g->philo[i].child = fork();
 		if ((int) g->philo[i].child == -1)
 			return (NULL);
@@ -258,27 +280,36 @@ void	*ft_launch(void *arg)
 		i++;
 	}
 	return (NULL);
-}
+}*/
 
-int	ft_philosophers(t_all *g)
+/*int	ft_philosophers(t_all *g)
 {
 	int			i;
-	pthread_t	thread[4];
+//	pthread_t	thread[4];
 
 	i = 0;
-	g->in_i = 0;
-	g->in_end = g->nbphilo / 4;
+//	g->in_i = 0;
+//	g->in_end = g->nbphilo / 4;
 	g->first_timeval = ft_get_time();
 	sem_wait(g->death);
-	while (i < 4)
+	while (i < g->nbphilo)
 	{
+		g->philo[i].child = fork();
+		if ((int) g->philo[i].child == -1)
+			return (1);
+		else if ((int) g->philo[i].child == 0)
+		{
+			g->philo[i].last_meal = ft_get_time();
+			if (ft_thread(g, g->philo[i]))
+				return (1);
+		}
+		i++;
 		if (pthread_create(&thread[i], NULL, ft_launch, &g))
 			return (1);
 		g->in_i += g->in_end;
 		g->in_end += g->in_end;
 		if (i == 2)
 			g->in_end = g->nbphilo;
-//		i += g->nbphilo / 4;
 		i++;
 	}
 	i = -1;
@@ -286,11 +317,11 @@ int	ft_philosophers(t_all *g)
 	while (++i < g->nbphilo)
 		kill(g->philo[i].child, SIGKILL);
 //		waitpid(g->philo[i].child, &g->philo[i].child, 0);
-	for (i = 0; i < 4; i++)
-		pthread_join(thread[i], NULL);
+//	for (i = 0; i < 4; i++)
+//		pthread_join(thread[i], NULL);
 	ft_end_philo(g, 0);
 	return (0);
-}
+}*/
 
 int	main(int ac, char **av)
 {
