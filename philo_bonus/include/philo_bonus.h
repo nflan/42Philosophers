@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 11:49:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/06 15:20:57 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/09 12:30:33 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_phil
 	int				id;
 	int				eat_count;
 	unsigned int	last_meal;
+	unsigned int	next_meal;
 	pid_t			pid;
 	struct s_all	*g;
 }	t_phil;

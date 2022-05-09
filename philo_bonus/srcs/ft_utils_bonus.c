@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/06 12:38:23 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/09 14:57:46 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,16 +79,20 @@ void	ft_action_print(t_phil *phil, int end)
 	ft_putnbr(phil->id + 1);
 //	write(1, str, ft_strlen(str));
 	if (end == 1)
+//		printf("%u %u has taken a fork\n", time, phil->id + 1);
 		write(1, "has taken a fork\n", 17);
 	else if (end == 2)
+//		printf("%u %u is eating\n", time, phil->id + 1);
 		write(1, "is eating\n", 10);
 	else if (end == 3)
+//		printf("%u %u is sleeping\n", time, phil->id + 1);
 		write(1, "is sleeping\n", 12);
 	else if (end == 4)
+//		printf("%u %u is thinking\n", time, phil->id + 1);
 		write(1, "is thinking\n", 12);
 	else if (!end)
+//		printf("%u %u died\n", time, phil->id + 1);
 		write(1, "died\n", 5);
-	sem_post(phil->g->print);
-	if (!end)
-		sem_wait(phil->g->print);
+	if (end != 0)
+		sem_post(phil->g->print);
 }
