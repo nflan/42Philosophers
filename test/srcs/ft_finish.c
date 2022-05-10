@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:31:57 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 16:53:59 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/10 17:11:21 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,20 @@ void	ft_end_philo(t_all *g, t_phil *phil)
 {
 	int	i;
 
-	i = -1;
-	while (++i < g->nbphilo)
+	i = 0;
+	while (i < g->nbphilo / 2)
 	{
-		if (pthread_mutex_destroy(&g->forks[i]))
+		if (pthread_mutex_destroy(&g->r_forks[i]))
 		{
-			pthread_mutex_unlock(&g->forks[i]);
-			pthread_mutex_destroy(&g->forks[i]);
+			pthread_mutex_unlock(&g->r_forks[i]);
+			pthread_mutex_destroy(&g->r_forks[i]);
 		}
+		if (pthread_mutex_destroy(&g->l_forks[i]))
+		{
+			pthread_mutex_unlock(&g->l_forks[i]);
+			pthread_mutex_destroy(&g->l_forks[i]);
+		}
+		i++;
 	}
 //	pthread_mutex_unlock(&g->lock);
 	i = -1;

@@ -6,15 +6,16 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/09 14:57:46 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/10 15:09:37 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_bonus.h"
 
-unsigned int	ft_time_check(unsigned int past, unsigned int now)
+int	ft_print_error(char *str)
 {
-	return (now - past);
+	printf("%s\n", str);
+	return (1);
 }
 
 unsigned int	ft_get_time(void)
@@ -23,24 +24,6 @@ unsigned int	ft_get_time(void)
 
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
-}
-
-void	ft_usleep(unsigned int time)
-{
-	unsigned int	i;
-
-	i = ft_get_time();
-	while (1)
-	{
-		if (ft_time_check(i, ft_get_time()) >= time)
-			break ;
-		usleep(50);
-	}
-}
-
-void	ft_putchar(char c)
-{
-	write(1, &c, 1);
 }
 
 void	ft_putnbr(unsigned int n)
@@ -69,30 +52,27 @@ void	ft_putnbr(unsigned int n)
 	write(1, " ", 1);
 }
 
-void	ft_action_print(t_phil *phil, int end)
+void	ft_action_print(t_phil *philo, int end)
 {
 	unsigned int	time;
 
-	sem_wait(phil->g->print);
-	time = ft_get_time() - phil->g->first_timeval;
-	ft_putnbr(time);
-	ft_putnbr(phil->id + 1);
-//	write(1, str, ft_strlen(str));
-	if (end == 1)
-//		printf("%u %u has taken a fork\n", time, phil->id + 1);
-		write(1, "has taken a fork\n", 17);
-	else if (end == 2)
-//		printf("%u %u is eating\n", time, phil->id + 1);
-		write(1, "is eating\n", 10);
-	else if (end == 3)
-//		printf("%u %u is sleeping\n", time, phil->id + 1);
-		write(1, "is sleeping\n", 12);
-	else if (end == 4)
-//		printf("%u %u is thinking\n", time, phil->id + 1);
-		write(1, "is thinking\n", 12);
-	else if (!end)
-//		printf("%u %u died\n", time, phil->id + 1);
-		write(1, "died\n", 5);
-	if (end != 0)
-		sem_post(phil->g->print);
+	sem_wait(philo->g->print);
+	time = ft_get_time() - philo->g->first_timeval;
+	if (time <= philo->next_meal && philo->g->death->__align == 0)
+	{
+		ft_putnbr(time);
+		ft_putnbr(philo->id + 1);
+		if (end == 1)
+			write(1, "has taken a fork\n", 17);
+		else if (end == 2)
+			write(1, "is eating\n", 10);
+		else if (end == 3)
+			write(1, "is sleeping\n", 12);
+		else if (end == 4)
+			write(1, "is thinking\n", 12);
+		else if (!end)
+			write(1, "died\n", 5);
+		if (end != 0)
+			sem_post(philo->g->print);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:30:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 17:01:03 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/10 17:23:50 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,17 @@ void	*ft_thread(void *arg)
 
 void	ft_philo_eats(t_phil *phil, t_all *g)
 {//problems parce que l'ordre de lock est parfois 0 puis 1 et parfois 1 puis 0
-	pthread_mutex_lock(&g->forks[phil->left_fork_id]);
+	if (phil->id % 2)
+		pthread_mutex_lock(&g->l_forks[phil->id - 1]);
+	else
+		pthread_mutex_lock(&g->l_forks[phil->id]);
 	ft_action_print(g, phil->id, " has taken a fork\n", 0);
-	pthread_mutex_lock(&g->forks[phil->right_fork_id]);
+	if (g->nbphilo == 1)
+		usleep(g->tdie * 1005);
+	if (phil->id % 2)
+		pthread_mutex_lock(&g->r_forks[phil->id - 1]);
+	else
+		pthread_mutex_lock(&g->r_forks[phil->id]);
 	ft_action_print(g, phil->id, " has taken a fork\n", 0);
 	ft_action_print(g, phil->id, " is eating\n", 0);
 	pthread_mutex_lock(&g->meal_check);
@@ -78,6 +86,14 @@ void	ft_philo_eats(t_phil *phil, t_all *g)
 	phil->x_ate++;
 	pthread_mutex_unlock(&g->meal_check);
 	ft_usleep(g->teat, g);
-	pthread_mutex_unlock(&g->forks[phil->right_fork_id]);
-	pthread_mutex_unlock(&g->forks[phil->left_fork_id]);
+	if (phil->id % 2)
+	{
+		pthread_mutex_unlock(&g->r_forks[phil->id - 1]);
+		pthread_mutex_unlock(&g->l_forks[phil->id - 1]);
+	}
+	else
+	{
+		pthread_mutex_unlock(&g->r_forks[phil->id]);
+		pthread_mutex_unlock(&g->l_forks[phil->id]);
+	}
 }

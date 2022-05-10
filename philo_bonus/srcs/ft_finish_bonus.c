@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:31:57 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/09 17:19:34 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/10 15:21:50 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,13 @@ void	*ft_death_checker(void *arg)
 		}
 		sem_post(philo->g->die);
 		sem_wait(philo->g->die);
-		if (philo->g->nbeat != -1 && philo->eat_count > philo->g->nbeat)
+		if (philo->g->nbeat != -1 && philo->g->eat_count > philo->g->nbeat)
 		{
 			sem_post(philo->g->death);
 			break ;
 		}
 		sem_post(philo->g->die);
+		usleep(100);
 	}
 	return (NULL);
 }
@@ -50,6 +51,7 @@ void	ft_end_philo(t_all *g, t_phil *philo)
 	sem_close(g->forks);
 	sem_close(g->death);
 	sem_close(g->print);
+	sem_close(g->take);
 	sem_close(g->die);
 	free(philo);
 }

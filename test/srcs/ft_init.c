@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:25:00 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 16:00:55 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/10 17:20:57 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,18 @@ int	ft_init_mutex(t_all *g)
 	int	i;
 
 	i = 0;
-	while (i < g->nbphilo)
-		if (pthread_mutex_init(&g->forks[i++], NULL))
+	while (i < g->nbphilo / 2)
+	{
+		if (pthread_mutex_init(&g->l_forks[i], NULL))
 			return (1);
+		i++;
+		if (i < g->nbphilo / 2)
+		{
+			if (pthread_mutex_init(&g->r_forks[i - 1], NULL))
+				return (1);
+			printf("OPEN\n");
+		}
+	}
 	if (pthread_mutex_init(&g->lock, NULL))
 		return (1);
 	if (pthread_mutex_init(&g->meal_check, NULL))
@@ -36,8 +45,8 @@ int	ft_init_philo(t_all *g)
 	{
 		g->philo[i].id = i;
 		g->philo[i].x_ate = 0;
-		g->philo[i].left_fork_id = i;
-		g->philo[i].right_fork_id = (i + 1) % g->nbphilo;
+	//	g->philo[i].left_fork_id = i;
+	//	g->philo[i].right_fork_id = (i + 1) % g->nbphilo;
 		g->philo[i].last_meal = 0;
 		g->philo[i].g = g;
 	}
