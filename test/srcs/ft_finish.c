@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:31:57 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 17:36:43 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/11 10:57:16 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	ft_death_checker(t_all *g, t_phil *phil, int i)
 		pthread_mutex_unlock(&g->meal_check);
 	}
 	pthread_mutex_unlock(&g->meal_check);
+	pthread_mutex_lock(&g->lock);
 }
 
 void	ft_end_philo(t_all *g, t_phil *phil)
@@ -68,6 +69,8 @@ void	ft_end_philo(t_all *g, t_phil *phil)
 	i = -1;
 	while (++i < g->nbphilo)
 		pthread_join(phil[i].thread_id, NULL);
-	pthread_mutex_destroy(&g->lock);
+	pthread_mutex_destroy(&g->print);
 	pthread_mutex_destroy(&g->meal_check);
+	pthread_mutex_unlock(&g->lock);
+	pthread_mutex_destroy(&g->lock);
 }

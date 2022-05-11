@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:08:42 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/03 11:40:29 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/11 16:08:22 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,25 +25,30 @@ typedef struct s_phil
 {
 	int				id;
 	int				x_ate;
+	int				is_dead;
 	int				left_fork_id;
 	int				right_fork_id;
-	long long		last_meal;
+	unsigned int	last_meal;
+	unsigned int	next_meal;
 	struct s_all	*g;
+	pthread_mutex_t	eat;
 	pthread_t		thread_id;
 }	t_phil;
 
 typedef struct s_all
 {
 	int				nbphilo;
-	long long		tdie;
-	long long		teat;
-	long long		tsleep;
+	unsigned int	tdie;
+	unsigned int	teat;
+	unsigned int	tsleep;
 	int				nbeat;
+	int				eat_count;
 	int				died;
 	int				all_ate;
-	long long		first_timeval;
+	unsigned int	first_timeval;
 	pthread_t		thread_id[2];
 	pthread_mutex_t	meal_check;
+	pthread_mutex_t	death;
 	pthread_mutex_t	lock;
 	pthread_mutex_t	forks[300];
 	t_phil			philo[300];
@@ -52,32 +57,33 @@ typedef struct s_all
 // MAIN
 
 // INIT
-int			ft_init_mutex(t_all *g);
-int			ft_init_philo(t_all *g);
-int			ft_init_all(t_all *g, char **av);
+int				ft_init_mutex(t_all *g);
+int				ft_init_philo(t_all *g);
+int				ft_init_all(t_all *g, char **av);
 
 // PHILO
-int			ft_philosophers(t_all *g);
-void		*ft_thread(void *arg);
-void		ft_philo_eats(t_phil *phil, t_all *g);
+int				ft_philosophers(t_all *g);
+void			*ft_thread(void *arg);
+void			ft_philo_eats(t_phil *phil, t_all *g);
 
 // FINISH
-void		ft_death_checker(t_all *g, t_phil *phil, int i);
-void		ft_end_philo(t_all *g, t_phil *phil);
+//void			ft_death_checker(t_all *g, t_phil *phil, int i);
+void			*ft_death_checker(void *arg);
+void			ft_end_philo(t_all *g);
 
 // UTILS
-long long	ft_time_check(long long past, long long now);
-long long	ft_get_time(void);
-void		ft_usleep(long long time, t_all *g);
-void		ft_action_print(t_all *g, int id, char *str, int end);
+unsigned int	ft_time_check(unsigned int past, unsigned int now);
+unsigned int	ft_get_time(void);
+void			ft_usleep(unsigned int time, t_all *g);
+void			ft_action_print(t_all *g, int id, char *str, int end);
 
 // TOOLS
-int			ft_putstr_fd(char *s, int fd);
-int			ft_print_error(char *str, int fd);
-long long	ft_atoi(const char *s);
+int				ft_putstr_fd(char *s, int fd);
+int				ft_print_error(char *str, int fd);
+long long		ft_atoi(const char *s);
 
 // PARSE
-int			ft_is_number(int ac, char **av, int error);
-int			ft_parsing(int ac, char **av, int error);
+int				ft_is_number(int ac, char **av, int error);
+int				ft_parsing(int ac, char **av, int error);
 
 #endif

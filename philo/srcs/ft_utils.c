@@ -6,18 +6,18 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 16:55:26 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/11 15:52:52 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
-long long	ft_time_check(long long past, long long now)
+unsigned int	ft_time_check(unsigned int past, unsigned int now)
 {
 	return (now - past);
 }
 
-long long	ft_get_time(void)
+unsigned int	ft_get_time(void)
 {
 	struct timeval	tv;
 
@@ -25,7 +25,7 @@ long long	ft_get_time(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void	ft_usleep(long long time, t_all *g)
+void	ft_usleep(unsigned int time, t_all *g)
 {
 	long long	i;
 
@@ -45,10 +45,7 @@ void	ft_action_print(t_all *g, int id, char *str, int end)
 
 	pthread_mutex_lock(&g->lock);
 	time = ft_get_time() - g->first_timeval;
-//	if (!g->died && !g->all_ate)
-//	{
-		printf("%lld %d%s", time, id + 1, str);
-//	}
-	(void)end;
-	pthread_mutex_unlock(&g->lock);
+	printf("%lld %d%s", time, id + 1, str);
+	if (!end)
+		pthread_mutex_unlock(&g->lock);
 }

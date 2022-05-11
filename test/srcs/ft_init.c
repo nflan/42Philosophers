@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:25:00 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 17:20:57 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/11 10:56:18 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ int	ft_init_mutex(t_all *g)
 		}
 	}
 	if (pthread_mutex_init(&g->lock, NULL))
+		return (1);
+	if (pthread_mutex_init(&g->print, NULL))
 		return (1);
 	if (pthread_mutex_init(&g->meal_check, NULL))
 		return (1);

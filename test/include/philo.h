@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:08:42 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 17:03:58 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/11 10:55:49 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_all
 	long long		first_timeval;
 	pthread_t		thread_id[2];
 	pthread_mutex_t	meal_check;
+	pthread_mutex_t	print;
 	pthread_mutex_t	lock;
 	pthread_mutex_t	l_forks[150];
 	pthread_mutex_t	r_forks[150];

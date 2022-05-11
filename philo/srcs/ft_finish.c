@@ -6,63 +6,52 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:31:57 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 16:53:59 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/11 17:56:54 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
-void	ft_death_checker(t_all *g, t_phil *phil, int i)
+void	*ft_death_checker(void *arg)
 {
-	usleep(g->tdie * 500);
+	t_phil	*philo;
+
+	philo = (t_phil *)arg;
+	usleep(philo->g->tdie * 900);
 	while (1)
 	{
-		i = -1;
-		pthread_mutex_lock(&g->meal_check);
-		while (++i < g->nbphilo && !g->died)
+		pthread_mutex_lock(&philo->g->meal_check);
+		if (ft_get_time() > philo->next_meal)
 		{
-			usleep(150);
-			if (ft_time_check(phil[i].last_meal, ft_get_time()) > g->tdie)
-			{
-				g->died = 1;
-				ft_action_print(g, i, " died\n", 1);
-			}
-		}
-		if (g->died)
-		{
-			pthread_mutex_unlock(&g->meal_check);
+			ft_action_print(philo->g, philo->id, " died\n", 1);
+			philo->g->died = 1;
+		//	pthread_mutex_unlock(&philo->g->death);
 			break ;
 		}
-		pthread_mutex_unlock(&g->meal_check);
-		i = 0;
-		pthread_mutex_lock(&g->meal_check);
-		while (g->nbeat != -1 && i < g->nbphilo && phil[i].x_ate >= g->nbeat)
-			i++;
-		if (i == g->nbphilo)
-		{
-			g->all_ate = 1;
-			break ;
-		}
-		pthread_mutex_unlock(&g->meal_check);
+		pthread_mutex_unlock(&philo->g->meal_check);
+		usleep(100);
 	}
+	pthread_mutex_unlock(&philo->g->meal_check);
+	return (NULL);
 }
 
-void	ft_end_philo(t_all *g, t_phil *phil)
+void	ft_end_philo(t_all *g)
 {
 	int	i;
 
 	i = -1;
 	while (++i < g->nbphilo)
-	{
-		if (pthread_mutex_destroy(&g->forks[i]))
-		{
-			pthread_mutex_unlock(&g->forks[i]);
-			pthread_mutex_destroy(&g->forks[i]);
-		}
-	}
+		pthread_join(g->philo[i].thread_id, NULL);
 //	pthread_mutex_unlock(&g->lock);
+	pthread_mutex_destroy(&g->lock);
+	pthread_mutex_destroy(&g->meal_check);
+//	pthread_mutex_unlock(&g->death);
+	pthread_mutex_destroy(&g->death);
 	i = -1;
 	while (++i < g->nbphilo)
-		pthread_join(phil[i].thread_id, NULL);
-	pthread_mutex_destroy(&g->lock);
+	{
+		pthread_mutex_destroy(&g->forks[i]);
+	//	pthread_mutex_unlock(&g->philo[i].eat);
+		pthread_mutex_destroy(&g->philo[i].eat);
+	}
 }
