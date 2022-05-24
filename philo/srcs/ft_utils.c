@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/11 15:52:52 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/17 12:45:52 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,9 @@ void	ft_action_print(t_all *g, int id, char *str, int end)
 
 	pthread_mutex_lock(&g->lock);
 	time = ft_get_time() - g->first_timeval;
-	printf("%lld %d%s", time, id + 1, str);
-	if (!end)
-		pthread_mutex_unlock(&g->lock);
+	pthread_mutex_lock(&g->meal_check);
+	if (!g->died || end)
+		printf("%lld %d%s", time, id + 1, str);
+	pthread_mutex_unlock(&g->meal_check);
+	pthread_mutex_unlock(&g->lock);
 }
