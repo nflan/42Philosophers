@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:31:57 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/24 19:05:26 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/25 11:53:51 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	ft_death_checker(t_all *g)
 		}
 		pthread_mutex_lock(&g->meal_check);
 		if (g->died)
-			break;
+			break ;
 		pthread_mutex_unlock(&g->meal_check);
 	}
 	pthread_mutex_unlock(&g->meal_check);
@@ -46,10 +46,10 @@ void	ft_end_philo(t_all *g)
 	int	i;
 
 	i = -1;
-	while (++i < g->nbphilo)
+	while (++i < g->launchedphilo)
 		pthread_join(g->philo[i].thread_id, NULL);
-	pthread_mutex_destroy(&g->lock);
 	pthread_mutex_destroy(&g->meal_check);
+	pthread_mutex_destroy(&g->lock);
 	pthread_mutex_destroy(&g->death);
 	i = -1;
 	while (++i > g->nbphilo)

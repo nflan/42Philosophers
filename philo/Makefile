@@ -6,12 +6,12 @@
 #    By: nflan <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/05 15:05:20 by nflan             #+#    #+#              #
-#    Updated: 2022/04/20 11:33:58 by nflan            ###   ########.fr        #
+#    Updated: 2022/05/25 11:58:00 by nflan            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRCS = srcs/main.c srcs/ft_tools.c srcs/ft_parse.c srcs/ft_philo.c \
-	   srcs/ft_finish.c srcs/ft_init.c srcs/ft_utils.c
+	   srcs/ft_finish.c srcs/ft_init.c srcs/ft_utils.c srcs/ft_actions.c
 
 INC = include/philo.h
 
