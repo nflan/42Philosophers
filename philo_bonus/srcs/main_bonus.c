@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:06:37 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 12:08:11 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/25 15:08:50 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ int	main(int ac, char **av)
 		return (0);
 	philo = ft_init_all(&g, av);
 	if (!philo)
-		return (ft_print_error("Init error"));
+		return (ft_end_philo(&g, philo), ft_print_error("Init error"));
 	sem_wait(g.death);
 	if (ft_philosopher(&g, philo))
-		return (ft_print_error("Thread error"));
+		return (ft_end_philo(&g, philo), 1);
 	while (1)
 		if (g.death->__align)
 			break ;
