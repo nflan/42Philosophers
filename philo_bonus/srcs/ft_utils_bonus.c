@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 11:26:53 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 15:09:37 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/25 12:54:33 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,14 @@ void	ft_action_print(t_phil *philo, int end)
 		if (end != 0)
 			sem_post(philo->g->print);
 	}
+}
+
+void	ft_usleep(long long time)
+{
+	while (time > 99999)
+	{
+		usleep(100000);
+		time -= 100000;
+	}
+	usleep(time);
 }

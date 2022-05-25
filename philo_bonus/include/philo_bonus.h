@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 11:49:07 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 15:04:20 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/25 12:54:44 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ typedef struct s_phil
 
 typedef struct s_all
 {
-	unsigned int	tdie;
-	unsigned int	teat;
-	unsigned int	tsleep;
+	long long		tdie;
+	long long		teat;
+	long long		tsleep;
 	unsigned int	first_timeval;
 	int				nbphilo;
 	int				nbeat;
@@ -78,6 +78,7 @@ int				ft_print_error(char *str);
 unsigned int	ft_get_time(void);
 void			ft_putnbr(unsigned int n);
 void			ft_action_print(t_phil *philo, int end);
+void			ft_usleep(long long time);
 
 // TOOLS
 void			ft_bzero(void *s, size_t n);

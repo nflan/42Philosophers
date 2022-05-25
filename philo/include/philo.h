@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 15:08:42 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/25 12:06:39 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/25 12:46:44 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ typedef struct s_all
 {
 	int				nbphilo;
 	int				launchedphilo;
-	unsigned int	tdie;
-	unsigned int	teat;
-	unsigned int	tsleep;
+	long long		tdie;
+	long long		teat;
+	long long		tsleep;
 	int				nbeat;
 	int				eat_count;
 	int				died;
@@ -78,9 +78,8 @@ void			ft_death_checker(t_all *g);
 void			ft_end_philo(t_all *g);
 
 // UTILS
-unsigned int	ft_time_check(unsigned int past, unsigned int now);
 unsigned int	ft_get_time(void);
-void			ft_usleep(unsigned int time, t_all *g);
+void			ft_usleep(long long time);
 void			ft_action_print(t_all *g, int id, char *str, int end);
 
 // TOOLS

@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 12:00:32 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/10 15:35:14 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/25 12:55:21 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	ft_get_rest(t_phil *philo)
 {
 	ft_action_print(philo, 3);
-	usleep(philo->g->tsleep * 1000);
+	ft_usleep(philo->g->tsleep * 1000);
 }
 
 void	ft_get_forks(t_phil *philo)
@@ -43,7 +43,7 @@ void	ft_get_diner(t_phil *philo)
 	if (philo->g->nbeat != -1)
 		philo->g->eat_count++;
 	sem_post(philo->g->die);
-	usleep(philo->g->teat * 1000);
+	ft_usleep(philo->g->teat * 1000);
 	sem_post(philo->g->forks);
 	sem_post(philo->g->forks);
 }

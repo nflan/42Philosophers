@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 11:54:45 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/25 12:06:18 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/25 12:47:05 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_get_rest(t_phil *philo)
 		return (1);
 	pthread_mutex_unlock(&philo->g->meal_check);
 	ft_action_print(philo->g, philo->id, " is sleeping\n", 0);
-	usleep(philo->g->tsleep * 1000);
+	ft_usleep(philo->g->tsleep * 1000);
 	return (0);
 }
 
@@ -47,7 +47,7 @@ void	ft_get_diner(t_phil *philo)
 	if (philo->g->nbeat != -1)
 		philo->g->eat_count++;
 	pthread_mutex_unlock(&philo->g->meal_check);
-	usleep(philo->g->teat * 1000);
+	ft_usleep(philo->g->teat * 1000);
 	pthread_mutex_unlock(&philo->g->forks[philo->right_fork_id]);
 	philo->fork_inuse[1]--;
 	pthread_mutex_unlock(&philo->g->forks[philo->left_fork_id]);

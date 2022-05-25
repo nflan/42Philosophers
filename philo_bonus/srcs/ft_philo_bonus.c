@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 12:04:03 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/25 12:22:02 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/25 12:55:03 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	ft_routine(t_phil *philo)
 	philo->last_meal = ft_get_time();
 	philo->next_meal = ft_get_time() + philo->g->tdie;
 	if (philo->id % 2)
-		usleep(philo->g->teat * 800);
+		ft_usleep(philo->g->teat * 800);
 	if (pthread_create(&death, NULL, ft_death_checker, philo))
 		sem_post(philo->g->death);
 	pthread_detach(death);
