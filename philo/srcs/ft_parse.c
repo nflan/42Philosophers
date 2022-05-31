@@ -6,7 +6,7 @@
 /*   By: nflan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/07 12:31:45 by nflan             #+#    #+#             */
-/*   Updated: 2022/05/24 15:22:32 by nflan            ###   ########.fr       */
+/*   Updated: 2022/05/31 11:59:30 by nflan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,22 @@
 
 int	ft_is_number(int ac, char **av, int error)
 {
-	while (ac-- > 1)
+	int	i;
+
+	while (ac-- > 1 && !error)
 	{
-		if (av[ac][0] < 48 || av[ac][0] > 57)
+		i = 0;
+		if (av[ac][i] < 48 || av[ac][i] > 57)
 		{
-			if (av[ac][0] != 45 && av[ac][0] != 43)
+			if (av[ac][i] != 45 && av[ac][i++] != 43)
 				error++;
-			else if (av[ac][1] < 48 || av[ac][1] > 57)
+			i++;
+		}
+		while (av[ac][i] && !error)
+		{
+			if ((av[ac][i] < 48 || av[ac][i] > 57) && av[ac][i] != 32)
 				error++;
+			i++;
 		}
 	}
 	if (error > 0)
